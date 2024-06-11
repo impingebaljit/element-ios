@@ -345,10 +345,16 @@ final class AuthenticationCoordinator: NSObject, AuthenticationCoordinatorProtoc
             onSessionCreated(session: session, flow: .login)
         case .loggedInWithQRCode(let session, let securityCompleted):
             authenticationType = .other
-            onSessionCreated(session: session, flow: .login, securityCompleted: securityCompleted)
+           onSessionCreated(session: session, flow: .login, securityCompleted: securityCompleted)
         case .fallback:
             showFallback(for: .login)
+       
         }
+        
+        
+        
+        
+        
     }
     
     // MARK: - Registration

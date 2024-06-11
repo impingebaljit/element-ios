@@ -48,13 +48,13 @@ struct AuthenticationServerInfoSection: View {
                 
                 Spacer()
                 
-                Button(action: editAction) {
-                    Text(VectorL10n.edit)
-                        .font(theme.fonts.body)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(theme.colors.accent))
-                }
+//                Button(action: editAction) {
+//                    Text(VectorL10n.edit)
+//                        .font(theme.fonts.body)
+//                        .padding(.horizontal, 12)
+//                        .padding(.vertical, 6)
+//                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(theme.colors.accent))
+//                }
             }
         }
     }

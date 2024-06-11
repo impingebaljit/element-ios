@@ -50,6 +50,7 @@ class AuthenticationQRLoginDisplayViewModel: AuthenticationQRLoginDisplayViewMod
             } catch {
                 // MXLog.error("[AuthenticationQRLoginDisplayViewModel] failed to generate QR", context: error)
             }
+
         }
     }
 

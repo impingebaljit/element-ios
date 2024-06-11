@@ -1,6 +1,6 @@
 source 'https://cdn.cocoapods.org/'
 
-# Uncomment this line to define a global platform for your project
+# Uncomment this line to define a global platform for your project save 
 platform :ios, '15.0'
 
 # By default, ignore all warnings from any pod
@@ -9,10 +9,44 @@ inhibit_all_warnings!
 # Use frameworks to allow usage of pods written in Swift
 use_frameworks!
 
+# Different flavours of pods to MatrixSDK. Can be one of:
+# - a String indicating an official MatrixSDK released version number
+# - `:local` (to use Development Pods)
+# - `{ :branch => 'sdk branch name'}` to depend on specific branch of MatrixSDK repo
+# - `{ :specHash => {sdk spec hash}` to depend on specific pod options (:git => …, :podspec => …) for MatrixSDK repo. Used by Fastfile during CI
+#
+# Warning: our internal tooling depends on the name of this variable name, so be sure not to change it
+$matrixSDKVersion = '= 0.27.8'
+# $matrixSDKVersion = :local
+# $matrixSDKVersion = { :branch => 'develop'}
+# $matrixSDKVersion = { :specHash => { git: 'https://git.io/fork123', branch: 'fix' } }
+
+########################################
+
+case $matrixSDKVersion
+when :local
+$matrixSDKVersionSpec = { :path => '../matrix-ios-sdk/MatrixSDK.podspec' }
+when Hash
+spec_mode, sdk_spec = $matrixSDKVersion.first # extract first and only key/value pair; key is spec_mode, value is sdk_spec
+
+  case spec_mode
+  when :branch
+  # :branch => sdk branch name
+  sdk_spec = { :git => 'https://github.com/matrix-org/matrix-ios-sdk.git', :branch => sdk_spec.to_s } unless sdk_spec.is_a?(Hash)
+  when :specHash
+  # :specHash => {sdk spec Hash}
+  sdk_spec = sdk_spec
+  end
+
+$matrixSDKVersionSpec = sdk_spec
+when String # specific MatrixSDK released version
+$matrixSDKVersionSpec = $matrixSDKVersion
+end
+
 # Method to import the MatrixSDK
 def import_MatrixSDK
-  pod 'MatrixSDK', :path => 'matrix-ios-sdk/MatrixSDK.podspec', :inhibit_warnings => false
-  pod 'MatrixSDK/JingleCallStack', :path => 'matrix-ios-sdk/MatrixSDK.podspec', :inhibit_warnings => false
+  pod 'MatrixSDK', $matrixSDKVersionSpec, :inhibit_warnings => false
+  pod 'MatrixSDK/JingleCallStack', $matrixSDKVersionSpec, :inhibit_warnings => false
 end
 
 ########################################
@@ -25,7 +59,7 @@ end
 def import_SwiftUI_pods
     pod 'Introspect', '~> 0.1'
     pod 'DSBottomSheet', '~> 0.3'
-    pod 'ZXingObjC', '~> 3.6.9'
+    pod 'ZXingObjC'
 end
 
 abstract_target 'RiotPods' do
@@ -61,7 +95,7 @@ abstract_target 'RiotPods' do
     pod 'SideMenu', '~> 6.5'
     pod 'DSWaveformImage', '~> 6.1.1'
     
-    pod 'FLEX', '~> 4.5.0', :configurations => ['Debug'], :inhibit_warnings => true
+    pod 'FLEX', :configurations => ['Debug']
 
     target 'RiotTests' do
       inherit! :search_paths
@@ -131,3 +165,5 @@ post_install do |installer|
 
   end
 end
+
+

@@ -292,29 +292,29 @@ final class AuthenticationLoginCoordinator: Coordinator, Presentable {
 
     /// Shows the QR login screen.
     @MainActor private func showQRLoginScreen() {
-        MXLog.debug("[AuthenticationLoginCoordinator] showQRLoginScreen")
-
-        let service = QRLoginService(client: parameters.authenticationService.client,
-                                     mode: .notAuthenticated)
-        let parameters = AuthenticationQRLoginStartCoordinatorParameters(navigationRouter: navigationRouter,
-                                                                         qrLoginService: service)
-        let coordinator = AuthenticationQRLoginStartCoordinator(parameters: parameters)
-        coordinator.callback = { [weak self, weak coordinator] callback in
-            guard let self = self, let coordinator = coordinator else { return }
-            switch callback {
-            case .done(let session, let securityCompleted):
-                self.callback?(.loggedInWithQRCode(session: session, securityCompleted: securityCompleted))
-            }
-            
-            self.remove(childCoordinator: coordinator)
-        }
-
-        coordinator.start()
-        add(childCoordinator: coordinator)
-
-        navigationRouter.push(coordinator, animated: true) { [weak self] in
-            self?.remove(childCoordinator: coordinator)
-        }
+//        MXLog.debug("[AuthenticationLoginCoordinator] showQRLoginScreen")
+//
+//        let service = QRLoginService(client: parameters.authenticationService.client,
+//                                     mode: .notAuthenticated)
+//        let parameters = AuthenticationQRLoginStartCoordinatorParameters(navigationRouter: navigationRouter,
+//                                                                         qrLoginService: service)
+//        let coordinator = AuthenticationQRLoginStartCoordinator(parameters: parameters)
+//        coordinator.callback = { [weak self, weak coordinator] callback in
+//            guard let self = self, let coordinator = coordinator else { return }
+//            switch callback {
+//            case .done(let session, let securityCompleted):
+//                self.callback?(.loggedInWithQRCode(session: session, securityCompleted: securityCompleted))
+//            }
+//            
+//            self.remove(childCoordinator: coordinator)
+//        }
+//
+//        coordinator.start()
+//        add(childCoordinator: coordinator)
+//
+//        navigationRouter.push(coordinator, animated: true) { [weak self] in
+//            self?.remove(childCoordinator: coordinator)
+//        }
     }
     
     /// Updates the view model to reflect any changes made to the homeserver.

@@ -1,4 +1,5 @@
 {
+  "originHash" : "e83dfbd02a40aa85dc7f54ac1472d2f7490051fecf96145c702e9c30f9c07c04",
   "pins" : [
     {
       "identity" : "devicekit",
@@ -41,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/matrix-org/matrix-analytics-events",
       "state" : {
-        "revision" : "de0cac487e5e7f607ee17045882204c91585461f",
-        "version" : "0.23.1"
+        "revision" : "44d5a0e898a71f8abbbe12afe9d73e82d370a9a1",
+        "version" : "0.15.0"
       }
     },
     {
@@ -100,5 +101,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

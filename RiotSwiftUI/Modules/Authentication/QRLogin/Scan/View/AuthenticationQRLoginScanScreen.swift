@@ -186,7 +186,7 @@ struct AuthenticationQRLoginScanScreen: View {
 
     /// Sends the `displayQR` view action.
     func displayQR() {
-        context.send(viewAction: .displayQR)
+       context.send(viewAction: .displayQR)
     }
 
     func squareSize(in geometry: GeometryProxy) -> CGFloat {

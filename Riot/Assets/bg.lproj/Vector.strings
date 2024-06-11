@@ -430,7 +430,7 @@
 "directory_server_all_rooms" = "Всички стаи на сървър %@";
 "directory_server_all_native_rooms" = "Всички изцяло Matrix стаи";
 "directory_server_type_homeserver" = "Въведете Home сървър, от който да се покажат публични стаи";
-"directory_server_placeholder" = "matrix.org";
+"directory_server_placeholder" = "matrix.org";//"matrix.tag.org";
 // Events formatter
 "event_formatter_member_updates" = "%tu промени в членствата";
 "event_formatter_widget_added" = "%@ приспособление добавено от %@";
