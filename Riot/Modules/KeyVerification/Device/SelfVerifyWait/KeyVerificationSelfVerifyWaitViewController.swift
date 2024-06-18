@@ -18,6 +18,7 @@
 
 import UIKit
 
+
 final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     
     // MARK: - Constants
@@ -30,6 +31,7 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     
     // MARK: Outlets
     
+    @IBOutlet weak var btnConnectWhatsApp: RoundedButton!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var informationLabel: UILabel!
     
@@ -69,15 +71,15 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.setupViews()
-        self.activityPresenter = ActivityIndicatorPresenter()
-        self.errorPresenter = MXKErrorAlertPresentation()
+       // self.setupViews()
+     //   self.activityPresenter = ActivityIndicatorPresenter()
+       // self.errorPresenter = MXKErrorAlertPresentation()
         
-        self.registerThemeServiceDidChangeThemeNotification()
-        self.update(theme: self.theme)
+     //   self.registerThemeServiceDidChangeThemeNotification()
+        //self.update(theme: self.theme)
         
-        self.viewModel.viewDelegate = self
-        self.viewModel.process(viewAction: .loadData)
+      //  self.viewModel.viewDelegate = self
+      //  self.viewModel.process(viewAction: .loadData)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -217,7 +219,18 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     // MARK: - Actions
     
     private func cancelButtonAction() {
-        self.viewModel.process(viewAction: .cancel)
+        //self.viewModel.process(viewAction: .cancel)
+        
+        MXLog.debug("Test Or Push")
+        
+        //pushToWhatsAppConnectScreen()
+    }
+    
+    
+    @IBAction func acn_ConnectWithWhatsApp(_ sender: Any) {
+        
+        apiForSyncWhatsVerificationCode()
+        //self.viewModel.process(viewAction: .cancel)
     }
     
     @IBAction private func recoverSecretsButtonAction(_ sender: Any) {
@@ -232,4 +245,114 @@ extension KeyVerificationSelfVerifyWaitViewController: KeyVerificationSelfVerify
     func keyVerificationSelfVerifyWaitViewModel(_ viewModel: KeyVerificationSelfVerifyWaitViewModelType, didUpdateViewState viewSate: KeyVerificationSelfVerifyWaitViewState) {
         self.render(viewState: viewSate)
     }
+    
+    
+}
+
+extension KeyVerificationSelfVerifyWaitViewController {
+   func pushToWhatsAppConnectScreen(){
+       
+       if let viewControllers = Bundle.main.loadNibNamed("WhatsAppVC", owner: nil, options: nil) {
+         // Access the first view controller in the array (assuming there's only one)
+         if let vc = viewControllers.first as? UIViewController {
+           self.navigationController?.pushViewController(vc, animated: true)
+         } else {
+           // Handle the case where the cast to UIViewController fails (e.g., wrong type in Nib)
+             MXLog.debug("Error: Could not cast first object in Nib to UIViewController")
+         }
+       } else {
+         // Handle the case where the Nib file is not found
+           MXLog.debug("Error: Could not load Nib file WhatsAppView")
+       }
+
+
+    }
+    
+}
+//
+//    private var navigationRouter: NavigationRouterType { parameters.navigationRouter }
+//    
+//    func pushToWhatsAppConnectScreen() {
+//        MXLog.debug("[KeyVerificationSelfVerifyWaitViewController] pushToWhatsAppConnectScreen")
+//        
+//        // Create a modal router
+//        let modalRouter = NavigationRouter()
+//        
+//        // Create the coordinator for the WhatsApp screen (replace with appropriate coordinator if needed)
+//        let parameters = AuthenticationForgotPasswordCoordinatorParameters(navigationRouter: modalRouter, loginWizard: loginWizard, homeserver: parameters.authenticationService.state.homeserver)
+//        let coordinator = AuthenticationForgotPasswordCoordinator(parameters: parameters)
+//        
+//        // Define the callback to handle the result
+//        coordinator.callback = { [weak self, weak coordinator] result in
+//            guard let self = self, let coordinator = coordinator else { return }
+//            switch result {
+//            case .success:
+//                self.navigationRouter.dismissModule(animated: true, completion: nil)
+//                self.successIndicator = self.indicatorPresenter.present(.success(label: VectorL10n.done))
+//            case .cancel:
+//                self.navigationRouter.dismissModule(animated: true, completion: nil)
+//            }
+//            self.remove(childCoordinator: coordinator)
+//        }
+//        
+//        // Start the coordinator
+//        coordinator.start()
+//        add(childCoordinator: coordinator)
+//        
+//        // Set the root module for the modal router and present it
+//        modalRouter.setRootModule(coordinator)
+//        navigationRouter.present(modalRouter, animated: true)
+//    }
+//}
+
+
+extension KeyVerificationSelfVerifyWaitViewController {
+    
+    func apiForSyncWhatsVerificationCode() {
+        // Define the semaphore
+        let semaphore = DispatchSemaphore(value: 0)
+
+        // Create the URL request
+        guard let url = URL(string: "https://matrix.tag.org/_matrix/client/r0/sync") else {
+            MXLog.debug("Invalid URL")
+            return
+        }
+        var request = URLRequest(url: url, timeoutInterval: 60.0) // Setting a finite timeout interval
+        request.addValue("Bearer syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
+
+        // Create the URLSession data task
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            defer {
+                // Signal the semaphore at the end of the block
+               // semaphore.signal()
+            }
+            
+            // Check for errors
+            if let error = error {
+                MXLog.debug("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            // Check for data
+            guard let data = data else {
+                MXLog.debug("No data received")
+                return
+            }
+
+            // Attempt to convert data to a string
+            if let dataString = String(data: data, encoding: .utf8) {
+                MXLog.debug(dataString)
+            } else {
+                MXLog.debug("Failed to decode data to string")
+            }
+        }
+
+        // Start the task
+        task.resume()
+        
+        // Wait for the semaphore to be signaled
+        //semaphore.wait()
+    }
+
 }

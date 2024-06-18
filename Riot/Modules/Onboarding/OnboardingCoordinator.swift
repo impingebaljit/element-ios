@@ -302,6 +302,8 @@ final class OnboardingCoordinator: NSObject, OnboardingCoordinatorProtocol {
         self.authenticationFlow = authenticationFlow
         self.authenticationType = authenticationType
         
+        //Analytics.shared.shouldShowAnalyticsPrompt = false
+        
         // Check whether another screen should be shown.
         if authenticationFlow == .register,
            let userId = session.credentials.userId,
@@ -318,8 +320,11 @@ final class OnboardingCoordinator: NSObject, OnboardingCoordinatorProtocol {
                 return
             }
         } else if Analytics.shared.shouldShowAnalyticsPrompt {
-            showAnalyticsPrompt(for: session)
-            return
+          //  showAnalyticsPrompt(for: session)
+           // return
+            
+            onboardingFinished = true
+            completeIfReady()
         }
         
         // Otherwise onboarding is finished.

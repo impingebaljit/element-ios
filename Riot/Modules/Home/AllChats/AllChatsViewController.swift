@@ -18,6 +18,7 @@
 
 import UIKit
 import Reusable
+import MatrixSDK
 
 protocol AllChatsViewControllerDelegate: AnyObject {
     func allChatsViewControllerDidCompleteAuthentication(_ allChatsViewController: AllChatsViewController)
@@ -28,6 +29,8 @@ protocol AllChatsViewControllerDelegate: AnyObject {
 
 class AllChatsViewController: HomeViewController {
     // MARK: - Class methods
+    
+    var matrixClient = MXRestClient()
     
     static override func nib() -> UINib! {
         return UINib(nibName: String(describing: self), bundle: Bundle(for: self.classForCoder()))
@@ -42,6 +45,9 @@ class AllChatsViewController: HomeViewController {
     }
     
     // MARK: - Properties
+    let baseUrl = "https://matrix.tag.org"
+    let accessToken = "syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v"
+    
     
     weak var allChatsDelegate: AllChatsViewControllerDelegate?
     
@@ -114,6 +120,8 @@ class AllChatsViewController: HomeViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+      
         
         editActionProvider.delegate = self
         spaceActionProvider.delegate = self
@@ -285,14 +293,78 @@ class AllChatsViewController: HomeViewController {
     }
     
     // MARK: - Actions
-    
+    // NIsha Code
     @objc private func showSpaceSelectorAction(sender: AnyObject) {
-        Analytics.shared.viewRoomTrigger = .roomList
-        let currentSpaceId = dataSource?.currentSpace?.spaceId ?? SpaceSelectorConstants.homeSpaceId
-        let spaceSelectorBridgePresenter = SpaceSelectorBottomSheetCoordinatorBridgePresenter(session: self.mainSession, selectedSpaceId: currentSpaceId, showHomeSpace: true)
-        spaceSelectorBridgePresenter.present(from: self, animated: true)
-        spaceSelectorBridgePresenter.delegate = self
-        self.spaceSelectorBridgePresenter = spaceSelectorBridgePresenter
+//        Analytics.shared.viewRoomTrigger = .roomList
+//        let currentSpaceId = dataSource?.currentSpace?.spaceId ?? SpaceSelectorConstants.homeSpaceId
+//        let spaceSelectorBridgePresenter = SpaceSelectorBottomSheetCoordinatorBridgePresenter(session: self.mainSession, selectedSpaceId: currentSpaceId, showHomeSpace: true)
+//        spaceSelectorBridgePresenter.present(from: self, animated: true)
+//        spaceSelectorBridgePresenter.delegate = self
+//        self.spaceSelectorBridgePresenter = spaceSelectorBridgePresenter
+        
+        
+
+        // Usage example
+        let baseUrl = "https://matrix.tag.org"
+        let accessToken = "syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v"
+        let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+
+       // fetchRoomEvents(baseUrl: baseUrl, accessToken: accessToken, roomId: roomId)
+        
+        
+//        fetchScanCodeEvent(baseUrl: baseUrl, accessToken: accessToken, roomId: roomId) { event, error in
+//          if let error = error {
+//              MXLog.debug("Error fetching event: \(error)")
+//          } else if let event = event {
+//              MXLog.debug("Found event: \(event)")
+//            // Do something with the event (e.g., process the content)
+//          } else {
+//              MXLog.debug("No event containing 'Scan the code below' found")
+//          }
+//        }
+        
+        callSyncApi()
+     
+//            apiForSyncWhatsVerificationCode { response in
+//                if let response = response {
+//                    // Handle the response
+//                    MXLog.debug("Response: \(response)")
+//                    
+//                    // Ensure the response is of expected type (String or Data)
+//                    if let jsonString = response as? String, let jsonData = jsonString.data(using: .utf8) {
+//                        do {
+//                            // Parse the JSON data
+//                            if let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+//                                if let accountData = json["account_data"] as? [String: Any],
+//                                   let events = accountData["events"] as? [[String: Any]] {
+//                                    // Traverse the events array
+//                                    for event in events {
+//                                        if let type = event["type"] as? String, type == "m.room.message" {
+//                                            if let content = event["content"] as? [String: Any],
+//                                               let body = content["body"] as? String,
+//                                               body.contains("Scan the code below") {
+//                                                MXLog.debug("Message: \(body)")
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        } catch {
+//                            MXLog.debug("Error parsing JSON: \(error)")
+//                        }
+//                    } else {
+//                        // Handle the error if response is not in expected format
+//                        MXLog.debug("Invalid response format")
+//                    }
+//                } else {
+//                    // Handle the error
+//                    MXLog.debug("Failed to get a valid response")
+//                }
+//            }
+        
+
+        
+        
     }
     
     // MARK: - UITableViewDataSource
@@ -1127,5 +1199,86 @@ private extension MXSpaceService {
     
     var hasHighlightNotification: Bool {
         notificationCounter.homeNotificationState.allHighlightCount > 0
+    }
+}
+
+extension AllChatsViewController {
+    
+        func apiForSyncWhatsVerificationCode(completion: @escaping (String?) -> Void) {
+            // Create the URL request
+            guard let url = URL(string: "https://matrix.tag.org/_matrix/client/r0/sync") else {
+                MXLog.debug("Invalid URL")
+                completion(nil)
+                return
+            }
+            var request = URLRequest(url: url, timeoutInterval: 60.0)
+            request.addValue("Bearer syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v", forHTTPHeaderField: "Authorization")
+            request.httpMethod = "GET"
+
+            // Create the URLSession data task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Check for errors
+                if let error = error {
+                    MXLog.debug("Error: \(error.localizedDescription)")
+                    completion(nil)
+                    return
+                }
+                
+                // Check for data
+                guard let data = data else {
+                    MXLog.debug("No data received")
+                    completion(nil)
+                    return
+                }
+
+                // Check the response status code
+                if let httpResponse = response as? HTTPURLResponse {
+                    MXLog.debug("HTTP Response Code: \(httpResponse.statusCode)")
+                }
+
+                // Attempt to convert data to a string
+                if let dataString = String(data: data, encoding: .utf8) {
+                    MXLog.debug("Response Data: \(dataString)")
+                    completion(dataString)
+                } else {
+                    MXLog.debug("Failed to decode data to string")
+                    completion(nil)
+                }
+            }
+
+            // Start the task
+            task.resume()
+        }
+}
+
+extension AllChatsViewController{
+    // Example usage:
+    func callSyncApi(){
+        let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
+
+        // Login example
+        matrixManager.login(username: "test", password: "testtag") { result in
+            switch result {
+            case .success(let accessToken):
+                MXLog.debug("Logged in with access token: \(accessToken)")
+                
+                // Sync example
+                matrixManager.sync { syncResult in
+                    switch syncResult {
+                    case .success(let syncResponse):
+                        MXLog.debug("Sync response: \(syncResponse)")
+                        // Handle sync response data here
+                    case .failure(let error):
+                        MXLog.debug("Sync error: \(error)")
+                        // Handle sync error here
+                    }
+                }
+                
+            case .failure(let error):
+                MXLog.debug("Login error: \(error)")
+                // Handle login error here
+            }
+        }
+
     }
 }

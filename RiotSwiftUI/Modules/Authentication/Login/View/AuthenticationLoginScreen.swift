@@ -42,10 +42,10 @@ struct AuthenticationLoginScreen: View {
                     .padding(.leading, 12)
                     .padding(.bottom, 16)
                 
-                Rectangle()
-                    .fill(theme.colors.quinaryContent)
-                    .frame(height: 1)
-                    .padding(.bottom, 22)
+//                Rectangle()
+//                    .fill(theme.colors.quinaryContent)
+//                    .frame(height: 1)
+//                    .padding(.bottom, 22)
                 
                 if viewModel.viewState.homeserver.showLoginForm {
                     loginForm

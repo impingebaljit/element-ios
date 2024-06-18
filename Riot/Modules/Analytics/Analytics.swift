@@ -89,7 +89,7 @@ import AnalyticsEvents
     /// - Parameter session: An optional session to use to when reading/generating the analytics ID.
     ///  The session will be ignored if not running.
     func optIn(with session: MXSession?) {
-        RiotSettings.shared.enableAnalytics = true
+        RiotSettings.shared.enableAnalytics = false
         startIfEnabled()
         
         guard let session = session else { return }

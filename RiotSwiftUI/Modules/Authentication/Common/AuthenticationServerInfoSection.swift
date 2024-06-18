@@ -37,16 +37,16 @@ struct AuthenticationServerInfoSection: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(theme.fonts.subheadline)
-                .foregroundColor(theme.colors.secondaryContent)
-            
-            HStack {
-                Text(address)
-                    .font(theme.fonts.body)
-                    .foregroundColor(theme.colors.primaryContent)
-                
-                Spacer()
+//            Text(title)
+//                .font(theme.fonts.subheadline)
+//                .foregroundColor(theme.colors.secondaryContent)
+//            
+//            HStack {
+//                Text(address)
+//                    .font(theme.fonts.body)
+//                    .foregroundColor(theme.colors.primaryContent)
+//                
+//                Spacer()
                 
 //                Button(action: editAction) {
 //                    Text(VectorL10n.edit)
@@ -55,7 +55,7 @@ struct AuthenticationServerInfoSection: View {
 //                        .padding(.vertical, 6)
 //                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(theme.colors.accent))
 //                }
-            }
+ //           }
         }
     }
 }
