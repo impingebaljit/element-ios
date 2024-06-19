@@ -115,6 +115,9 @@ class AllChatsViewController: HomeViewController {
     private(set) var isOnboardingInProgress: Bool = false
     
     private var toolbarHeight: CGFloat = 0
+    
+    
+    let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
 
     // MARK: - Lifecycle
     
@@ -305,9 +308,9 @@ class AllChatsViewController: HomeViewController {
         
 
         // Usage example
-        let baseUrl = "https://matrix.tag.org"
-        let accessToken = "syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v"
-        let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+        //let baseUrl = "https://matrix.tag.org"
+        //let accessToken = "syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v"
+        //let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
 
        // fetchRoomEvents(baseUrl: baseUrl, accessToken: accessToken, roomId: roomId)
         
@@ -1253,32 +1256,77 @@ extension AllChatsViewController {
 
 extension AllChatsViewController{
     // Example usage:
-    func callSyncApi(){
-        let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
-
-        // Login example
-        matrixManager.login(username: "test", password: "testtag") { result in
-            switch result {
-            case .success(let accessToken):
-                MXLog.debug("Logged in with access token: \(accessToken)")
-                
-                // Sync example
-                matrixManager.sync { syncResult in
-                    switch syncResult {
-                    case .success(let syncResponse):
-                        MXLog.debug("Sync response: \(syncResponse)")
-                        // Handle sync response data here
-                    case .failure(let error):
-                        MXLog.debug("Sync error: \(error)")
-                        // Handle sync error here
+    
+      func callSyncApi() {
+            
+            
+            // Login example
+            matrixManager.login(username: "test", password: "testtag") { result in
+                switch result {
+                case .success(let accessToken):
+                    MXLog.debug("Logged in with access token: \(accessToken)")
+                    
+                    // Send a message after successful login
+                    let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+                    let message = "Hello from MatrixManager!"
+                    
+                    self.matrixManager.sendMessage(roomId: roomId, message: message) { sendMessageResult in
+                        switch sendMessageResult {
+                        case .success:
+                            MXLog.debug("Message sent successfully")
+                            
+                            // Handle message sent successfully, update UI or perform other actions
+                            DispatchQueue.main.async {
+                              //  self.lbl_ScanCode.text = "Message Sent Successfully"
+                                
+                                self.getSyncCode()
+                            }
+                            
+                        case .failure(let error):
+                            MXLog.debug("Failed to send message: \(error)")
+                            // Handle send message error here
+                        }
                     }
+                    
+                case .failure(let error):
+                    MXLog.debug("Login error: \(error)")
+                    // Handle login error here
                 }
-                
-            case .failure(let error):
-                MXLog.debug("Login error: \(error)")
-                // Handle login error here
             }
         }
-
+    
+    func getSyncCode(){
+    
+        
+        let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+        
+        matrixManager.sync { syncResult in
+            switch syncResult {
+            case .success(let syncResponse):
+                MXLog.debug("Sync response: \(syncResponse)")
+                
+                // Handle sync response here
+                if let joinedRoom = syncResponse.rooms.join[roomId] {
+                    for event in joinedRoom.timeline.events {
+                        if event.type == "m.room.message", let body = event.content.body {
+                            // Check if the body contains the scan code format you're interested in
+                            if body.contains("**") {
+                                let components = body.components(separatedBy: "**")
+                                if components.count > 1 {
+                                    let scanCode = components[1]
+                                    DispatchQueue.main.async {
+                                        //self.lbl_ScanCode.text = scanCode
+                                        MXLog.debug("Scan Code: \(scanCode)")
+                                    }
+                                    // Update UI or perform other actions with the scan code
+                                }
+                            }
+                        }
+                    }
+                }
+            case .failure(let error):
+                MXLog.debug("Sync error: \(error)")
+            }
+        }
     }
 }

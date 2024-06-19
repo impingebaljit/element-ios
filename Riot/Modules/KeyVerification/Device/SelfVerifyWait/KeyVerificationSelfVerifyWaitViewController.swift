@@ -31,6 +31,7 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     
     // MARK: Outlets
     
+    @IBOutlet weak var lbl_ScanCode: UILabel!
     @IBOutlet weak var btnConnectWhatsApp: RoundedButton!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var informationLabel: UILabel!
@@ -54,6 +55,9 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     private var activityPresenter: ActivityIndicatorPresenter!
     
     private weak var cancelBarButtonItem: UIBarButtonItem?
+    
+    let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
+
 
     // MARK: - Setup
     
@@ -227,9 +231,12 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     }
     
     
+    @IBAction func acn_SyncCode(_ sender: Any) {
+        self.getSyncCode()
+    }
     @IBAction func acn_ConnectWithWhatsApp(_ sender: Any) {
         
-        apiForSyncWhatsVerificationCode()
+        callSyncApi()
         //self.viewModel.process(viewAction: .cancel)
     }
     
@@ -308,51 +315,143 @@ extension KeyVerificationSelfVerifyWaitViewController {
 
 extension KeyVerificationSelfVerifyWaitViewController {
     
-    func apiForSyncWhatsVerificationCode() {
-        // Define the semaphore
-        let semaphore = DispatchSemaphore(value: 0)
+    
 
-        // Create the URL request
-        guard let url = URL(string: "https://matrix.tag.org/_matrix/client/r0/sync") else {
-            MXLog.debug("Invalid URL")
-            return
-        }
-        var request = URLRequest(url: url, timeoutInterval: 60.0) // Setting a finite timeout interval
-        request.addValue("Bearer syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "GET"
+    
+//    func callSyncApi() {
+//        let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
+//        
+//        // Login example
+//        matrixManager.login(username: "test", password: "testtag") { result in
+//            switch result {
+//            case .success(let accessToken):
+//                MXLog.debug("Logged in with access token: \(accessToken)")
+//                
+//                // Send a message first
+//                let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+//                let message = "Hello from MatrixManager!"
+//                
+//                matrixManager.sendMessage(roomId: roomId, message: message) { sendMessageResult in
+//                    switch sendMessageResult {
+//                    case .success:
+//                        MXLog.debug("Message sent successfully")
+//                        
+//                        // After sending message, perform sync
+//                        matrixManager.sync { syncResult in
+//                            switch syncResult {
+//                            case .success(let syncResponse):
+//                                MXLog.debug("Sync response: \(syncResponse)")
+//                                
+//                                // Handle sync response here
+//                                if let joinedRoom = syncResponse.rooms.join[roomId] {
+//                                    for event in joinedRoom.timeline.events {
+//                                        if event.type == "m.room.message", let body = event.content.body {
+//                                            // Check if the body contains the scan code format you're interested in
+//                                            if body.contains("**") {
+//                                                let components = body.components(separatedBy: "**")
+//                                                if components.count > 1 {
+//                                                    let scanCode = components[1]
+//                                                    DispatchQueue.main.async {
+//                                                        self.lbl_ScanCode.text = scanCode
+//                                                        MXLog.debug("Scan Code: \(scanCode)")
+//                                                    }
+//                                                    // Update UI or perform other actions with the scan code
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                                
+//                            case .failure(let error):
+//                                MXLog.debug("Sync error: \(error)")
+//                                // Handle sync error here
+//                            }
+//                        }
+//                        
+//                    case .failure(let error):
+//                        MXLog.debug("Failed to send message: \(error)")
+//                        // Handle send message error here
+//                    }
+//                }
+//                
+//            case .failure(let error):
+//                MXLog.debug("Login error: \(error)")
+//                // Handle login error here
+//            }
+//        }
+//    }
+//
 
-        // Create the URLSession data task
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            defer {
-                // Signal the semaphore at the end of the block
-               // semaphore.signal()
-            }
-            
-            // Check for errors
-            if let error = error {
-                MXLog.debug("Error: \(error.localizedDescription)")
-                return
-            }
-            
-            // Check for data
-            guard let data = data else {
-                MXLog.debug("No data received")
-                return
-            }
-
-            // Attempt to convert data to a string
-            if let dataString = String(data: data, encoding: .utf8) {
-                MXLog.debug(dataString)
-            } else {
-                MXLog.debug("Failed to decode data to string")
-            }
-        }
-
-        // Start the task
-        task.resume()
-        
-        // Wait for the semaphore to be signaled
-        //semaphore.wait()
-    }
-
+    func callSyncApi() {
+          
+          
+          // Login example
+          matrixManager.login(username: "test", password: "testtag") { result in
+              switch result {
+              case .success(let accessToken):
+                  MXLog.debug("Logged in with access token: \(accessToken)")
+                  
+                  // Send a message after successful login
+                  let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+                  let message = "Hello from MatrixManager!"
+                  
+                  self.matrixManager.sendMessage(roomId: roomId, message: message) { sendMessageResult in
+                      switch sendMessageResult {
+                      case .success:
+                          MXLog.debug("Message sent successfully")
+                          
+                          // Handle message sent successfully, update UI or perform other actions
+                          DispatchQueue.main.async {
+                            //  self.lbl_ScanCode.text = "Message Sent Successfully"
+                              
+                              
+                          }
+                          
+                      case .failure(let error):
+                          MXLog.debug("Failed to send message: \(error)")
+                          // Handle send message error here
+                      }
+                  }
+                  
+              case .failure(let error):
+                  MXLog.debug("Login error: \(error)")
+                  // Handle login error here
+              }
+          }
+      }
+  
+  func getSyncCode(){
+ 
+      let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+      
+      matrixManager.sync { syncResult in
+          switch syncResult {
+          case .success(let syncResponse):
+              MXLog.debug("Sync response: \(syncResponse)")
+              
+              // Handle sync response here
+              if let joinedRoom = syncResponse.rooms.join[roomId] {
+                  for event in joinedRoom.timeline.events {
+                      if event.type == "m.room.message", let body = event.content.body {
+                          // Check if the body contains the scan code format you're interested in
+                          if body.contains("**") {
+                              let components = body.components(separatedBy: "**")
+                              if components.count > 1 {
+                                  let scanCode = components[1]
+                                  DispatchQueue.main.async {
+                                      self.lbl_ScanCode.text = scanCode
+                                      MXLog.debug("Scan Code: \(scanCode)")
+                                  }
+                                  // Update UI or perform other actions with the scan code
+                              }
+                          }
+                      }
+                  }
+              }
+          case .failure(let error):
+              MXLog.debug("Sync error: \(error)")
+          }
+      }
+  }
+    
 }

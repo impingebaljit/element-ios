@@ -51,7 +51,7 @@ class MatrixManager {
         }
     }
     
-    func sync(completion: @escaping (Result<SyncResponse, Error>) -> Void) {
+    func sync(completion: @escaping (Result<SyncResponseMatrix, Error>) -> Void) {
         guard let accessToken = self.accessToken else {
             completion(.failure(MatrixError.notLoggedIn))
             return
@@ -65,7 +65,7 @@ class MatrixManager {
             case .success(let data):
                 do {
                     let jsonDecoder = JSONDecoder()
-                    let response = try jsonDecoder.decode(SyncResponse.self, from: data)
+                    let response = try jsonDecoder.decode(SyncResponseMatrix.self, from: data)
                     completion(.success(response))
                 } catch {
                     completion(.failure(error))
@@ -75,6 +75,29 @@ class MatrixManager {
             }
         }
     }
+    
+    func sendMessage(roomId: String, message: String, completion: @escaping (Result<Void, Error>) -> Void) {
+            guard let accessToken = self.accessToken else {
+                completion(.failure(MatrixError.notLoggedIn))
+                return
+            }
+            
+            let sendMessageUrl = "\(baseUrl)/rooms/\(roomId)/send/m.room.message"
+            let headers = ["Authorization": "Bearer \(accessToken)", "Content-Type": "application/json"]
+            let params: [String: Any] = [
+                "msgtype": "m.text",
+                "body": "login +917837084644"
+            ]
+            
+            sendRequest(url: sendMessageUrl, method: "POST", params: params, headers: headers) { result in
+                switch result {
+                case .success:
+                    completion(.success(()))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
     
     private func sendRequest(url: String, method: String, params: [String: Any]? = nil, headers: [String: String]? = nil, completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = URL(string: url) else {
