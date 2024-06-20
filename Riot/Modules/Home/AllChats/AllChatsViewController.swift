@@ -298,76 +298,13 @@ class AllChatsViewController: HomeViewController {
     // MARK: - Actions
     // NIsha Code
     @objc private func showSpaceSelectorAction(sender: AnyObject) {
-//        Analytics.shared.viewRoomTrigger = .roomList
-//        let currentSpaceId = dataSource?.currentSpace?.spaceId ?? SpaceSelectorConstants.homeSpaceId
-//        let spaceSelectorBridgePresenter = SpaceSelectorBottomSheetCoordinatorBridgePresenter(session: self.mainSession, selectedSpaceId: currentSpaceId, showHomeSpace: true)
-//        spaceSelectorBridgePresenter.present(from: self, animated: true)
-//        spaceSelectorBridgePresenter.delegate = self
-//        self.spaceSelectorBridgePresenter = spaceSelectorBridgePresenter
-        
-        
-
-        // Usage example
-        //let baseUrl = "https://matrix.tag.org"
-        //let accessToken = "syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v"
-        //let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
-
-       // fetchRoomEvents(baseUrl: baseUrl, accessToken: accessToken, roomId: roomId)
-        
-        
-//        fetchScanCodeEvent(baseUrl: baseUrl, accessToken: accessToken, roomId: roomId) { event, error in
-//          if let error = error {
-//              MXLog.debug("Error fetching event: \(error)")
-//          } else if let event = event {
-//              MXLog.debug("Found event: \(event)")
-//            // Do something with the event (e.g., process the content)
-//          } else {
-//              MXLog.debug("No event containing 'Scan the code below' found")
-//          }
-//        }
-        
-        callSyncApi()
-     
-//            apiForSyncWhatsVerificationCode { response in
-//                if let response = response {
-//                    // Handle the response
-//                    MXLog.debug("Response: \(response)")
-//                    
-//                    // Ensure the response is of expected type (String or Data)
-//                    if let jsonString = response as? String, let jsonData = jsonString.data(using: .utf8) {
-//                        do {
-//                            // Parse the JSON data
-//                            if let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
-//                                if let accountData = json["account_data"] as? [String: Any],
-//                                   let events = accountData["events"] as? [[String: Any]] {
-//                                    // Traverse the events array
-//                                    for event in events {
-//                                        if let type = event["type"] as? String, type == "m.room.message" {
-//                                            if let content = event["content"] as? [String: Any],
-//                                               let body = content["body"] as? String,
-//                                               body.contains("Scan the code below") {
-//                                                MXLog.debug("Message: \(body)")
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        } catch {
-//                            MXLog.debug("Error parsing JSON: \(error)")
-//                        }
-//                    } else {
-//                        // Handle the error if response is not in expected format
-//                        MXLog.debug("Invalid response format")
-//                    }
-//                } else {
-//                    // Handle the error
-//                    MXLog.debug("Failed to get a valid response")
-//                }
-//            }
-        
-
-        
-        
+        Analytics.shared.viewRoomTrigger = .roomList
+        let currentSpaceId = dataSource?.currentSpace?.spaceId ?? SpaceSelectorConstants.homeSpaceId
+        let spaceSelectorBridgePresenter = SpaceSelectorBottomSheetCoordinatorBridgePresenter(session: self.mainSession, selectedSpaceId: currentSpaceId, showHomeSpace: true)
+        spaceSelectorBridgePresenter.present(from: self, animated: true)
+        spaceSelectorBridgePresenter.delegate = self
+        self.spaceSelectorBridgePresenter = spaceSelectorBridgePresenter
+    
     }
     
     // MARK: - UITableViewDataSource
@@ -389,6 +326,11 @@ class AllChatsViewController: HomeViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+//        if indexPath.row == 0 {
+//                return UITableViewCell()
+//            }
+        
         guard let sectionType = sectionType(forSectionAt: indexPath.section), sectionType == .invites else {
             return super.tableView(tableView, cellForRowAt: indexPath)
         }
@@ -431,7 +373,7 @@ class AllChatsViewController: HomeViewController {
         guard sectionType == .allChats, let numberOfRowsInSection = recentsDataSource.recentsListService.allChatsRoomListData?.counts.numberOfRooms, indexPath.row == numberOfRowsInSection - 4 else {
             return
         }
-        
+       
         tableViewPaginationThrottler.throttle {
             recentsDataSource.paginate(inSection: indexPath.section)
         }
@@ -1270,7 +1212,7 @@ extension AllChatsViewController{
                     let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
                     let message = "Hello from MatrixManager!"
                     
-                    self.matrixManager.sendMessage(roomId: roomId, message: message) { sendMessageResult in
+                    self.matrixManager.sendMessage(roomId: roomId, phoneNumber: "", message: message) { sendMessageResult in
                         switch sendMessageResult {
                         case .success:
                             MXLog.debug("Message sent successfully")

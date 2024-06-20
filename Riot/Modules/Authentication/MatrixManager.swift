@@ -76,7 +76,7 @@ class MatrixManager {
         }
     }
     
-    func sendMessage(roomId: String, message: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func sendMessage(roomId: String,phoneNumber: String, message: String, completion: @escaping (Result<Void, Error>) -> Void) {
             guard let accessToken = self.accessToken else {
                 completion(.failure(MatrixError.notLoggedIn))
                 return
@@ -86,7 +86,7 @@ class MatrixManager {
             let headers = ["Authorization": "Bearer \(accessToken)", "Content-Type": "application/json"]
             let params: [String: Any] = [
                 "msgtype": "m.text",
-                "body": "login +917837084644"
+                "body": "login \(phoneNumber)"
             ]
             
             sendRequest(url: sendMessageUrl, method: "POST", params: params, headers: headers) { result in
@@ -140,6 +140,22 @@ class MatrixManager {
         
         task.resume()
     }
+    
+    
+    func showAlert(title: String, message: String) {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            
+            let okAction = UIAlertAction(title: "OK", style: .default) { action in
+                // Perform any actions when the alert is dismissed
+            }
+            
+            alert.addAction(okAction)
+            
+            if let topController = UIApplication.topViewController() {
+                topController.present(alert, animated: true, completion: nil)
+            }
+        }
+       
 }
 
 enum MatrixError: Error {
@@ -164,4 +180,21 @@ struct LoginResponse: Codable {
 
 struct SyncResponse: Codable {
     // Define your sync response structure
+}
+
+extension UIApplication {
+    class func topViewController(controller: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+        if let navigationController = controller as? UINavigationController {
+            return topViewController(controller: navigationController.visibleViewController)
+        }
+        if let tabController = controller as? UITabBarController {
+            if let selected = tabController.selectedViewController {
+                return topViewController(controller: selected)
+            }
+        }
+        if let presented = controller?.presentedViewController {
+            return topViewController(controller: presented)
+        }
+        return controller
+    }
 }

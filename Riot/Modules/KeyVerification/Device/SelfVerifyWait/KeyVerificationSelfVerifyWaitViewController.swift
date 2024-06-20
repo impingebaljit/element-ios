@@ -31,6 +31,7 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     
     // MARK: Outlets
     
+    @IBOutlet weak var tf_PhoneNumber: UITextField!
     @IBOutlet weak var lbl_ScanCode: UILabel!
     @IBOutlet weak var btnConnectWhatsApp: RoundedButton!
     @IBOutlet private weak var titleLabel: UILabel!
@@ -232,11 +233,13 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     
     
     @IBAction func acn_SyncCode(_ sender: Any) {
-        self.getSyncCode()
+        //self.getSyncCode()
+        
+        callSyncApi()
     }
     @IBAction func acn_ConnectWithWhatsApp(_ sender: Any) {
         
-        callSyncApi()
+       // callSyncApi()
         //self.viewModel.process(viewAction: .cancel)
     }
     
@@ -383,8 +386,13 @@ extension KeyVerificationSelfVerifyWaitViewController {
 //
 
     func callSyncApi() {
-          
-          
+        let phone = tf_PhoneNumber.text
+        guard let phoneNumber = phone, !phone!.isEmpty else {
+            MXLog.debug("Please enter your phone number.")
+            
+            matrixManager.showAlert(title: "Error", message: "Please enter your phone number.")
+                    return
+                }
           // Login example
           matrixManager.login(username: "test", password: "testtag") { result in
               switch result {
@@ -395,15 +403,15 @@ extension KeyVerificationSelfVerifyWaitViewController {
                   let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
                   let message = "Hello from MatrixManager!"
                   
-                  self.matrixManager.sendMessage(roomId: roomId, message: message) { sendMessageResult in
+                  self.matrixManager.sendMessage(roomId: roomId, phoneNumber: phone ?? "", message: message) { sendMessageResult in
                       switch sendMessageResult {
                       case .success:
                           MXLog.debug("Message sent successfully")
                           
                           // Handle message sent successfully, update UI or perform other actions
-                          DispatchQueue.main.async {
-                            //  self.lbl_ScanCode.text = "Message Sent Successfully"
+                          DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {                            //  self.lbl_ScanCode.text = "Message Sent Successfully"
                               
+                              self.getSyncCode()
                               
                           }
                           
@@ -441,6 +449,11 @@ extension KeyVerificationSelfVerifyWaitViewController {
                                   DispatchQueue.main.async {
                                       self.lbl_ScanCode.text = scanCode
                                       MXLog.debug("Scan Code: \(scanCode)")
+                                      DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+                                          
+                                          self.viewModel.process(viewAction: .cancel)
+                                      }
+                                      
                                   }
                                   // Update UI or perform other actions with the scan code
                               }
