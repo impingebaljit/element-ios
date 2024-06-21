@@ -25,10 +25,25 @@ import Foundation
 class MatrixManager {
     private let baseUrl: String
     private var accessToken: String?
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     
     init(baseUrl: String) {
         self.baseUrl = baseUrl
+        activityIndicator.hidesWhenStopped = true
     }
+    
+
+      func startLoading(in viewController: UIViewController) {
+        viewController.view.addSubview(activityIndicator)
+        activityIndicator.center = viewController.view.center
+        activityIndicator.startAnimating()
+      }
+
+      func stopLoading() {
+        activityIndicator.removeFromSuperview() // Remove from any view it's currently in
+        activityIndicator.stopAnimating()
+      }
+    
     
     func login(username: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
         let loginUrl = "\(baseUrl)/login"

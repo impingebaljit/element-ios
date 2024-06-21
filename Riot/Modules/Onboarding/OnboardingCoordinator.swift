@@ -323,8 +323,7 @@ final class OnboardingCoordinator: NSObject, OnboardingCoordinatorProtocol {
           //  showAnalyticsPrompt(for: session)
            // return
             
-            onboardingFinished = true
-            completeIfReady()
+           
         }
         
         // Otherwise onboarding is finished.

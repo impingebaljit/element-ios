@@ -30,6 +30,8 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     // MARK: - Properties
     
     // MARK: Outlets
+  
+    private var syncTimer: Timer?
     
     @IBOutlet weak var tf_PhoneNumber: UITextField!
     @IBOutlet weak var lbl_ScanCode: UILabel!
@@ -59,6 +61,9 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     
     let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
 
+    
+    
+    
 
     // MARK: - Setup
     
@@ -85,6 +90,8 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
         
       //  self.viewModel.viewDelegate = self
       //  self.viewModel.process(viewAction: .loadData)
+        
+        //startSync()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -318,117 +325,73 @@ extension KeyVerificationSelfVerifyWaitViewController {
 
 extension KeyVerificationSelfVerifyWaitViewController {
     
-    
+    func startSync() {
+            syncTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(getSyncCode), userInfo: nil, repeats: true)
+        }
+        
 
     
-//    func callSyncApi() {
-//        let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
-//        
-//        // Login example
-//        matrixManager.login(username: "test", password: "testtag") { result in
-//            switch result {
-//            case .success(let accessToken):
-//                MXLog.debug("Logged in with access token: \(accessToken)")
-//                
-//                // Send a message first
-//                let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
-//                let message = "Hello from MatrixManager!"
-//                
-//                matrixManager.sendMessage(roomId: roomId, message: message) { sendMessageResult in
-//                    switch sendMessageResult {
-//                    case .success:
-//                        MXLog.debug("Message sent successfully")
-//                        
-//                        // After sending message, perform sync
-//                        matrixManager.sync { syncResult in
-//                            switch syncResult {
-//                            case .success(let syncResponse):
-//                                MXLog.debug("Sync response: \(syncResponse)")
-//                                
-//                                // Handle sync response here
-//                                if let joinedRoom = syncResponse.rooms.join[roomId] {
-//                                    for event in joinedRoom.timeline.events {
-//                                        if event.type == "m.room.message", let body = event.content.body {
-//                                            // Check if the body contains the scan code format you're interested in
-//                                            if body.contains("**") {
-//                                                let components = body.components(separatedBy: "**")
-//                                                if components.count > 1 {
-//                                                    let scanCode = components[1]
-//                                                    DispatchQueue.main.async {
-//                                                        self.lbl_ScanCode.text = scanCode
-//                                                        MXLog.debug("Scan Code: \(scanCode)")
-//                                                    }
-//                                                    // Update UI or perform other actions with the scan code
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                                
-//                            case .failure(let error):
-//                                MXLog.debug("Sync error: \(error)")
-//                                // Handle sync error here
-//                            }
-//                        }
-//                        
-//                    case .failure(let error):
-//                        MXLog.debug("Failed to send message: \(error)")
-//                        // Handle send message error here
-//                    }
-//                }
-//                
-//            case .failure(let error):
-//                MXLog.debug("Login error: \(error)")
-//                // Handle login error here
-//            }
-//        }
-//    }
-//
 
+   
+    
     func callSyncApi() {
         let phone = tf_PhoneNumber.text
         guard let phoneNumber = phone, !phone!.isEmpty else {
             MXLog.debug("Please enter your phone number.")
             
             matrixManager.showAlert(title: "Error", message: "Please enter your phone number.")
-                    return
+            return
+        }
+        DispatchQueue.main.async {
+            self.matrixManager.startLoading(in: self)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            // Login example
+            self.matrixManager.login(username: "test", password: "testtag") { result in
+                switch result {
+                case .success(let accessToken):
+                    MXLog.debug("Logged in with access token: \(accessToken)")
+                    
+                    // Send a message after successful login
+                    let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+                    let message = "Hello from MatrixManager!"
+                    
+                    self.matrixManager.sendMessage(roomId: roomId, phoneNumber: phone ?? "", message: message) { sendMessageResult in
+                        switch sendMessageResult {
+                        case .success:
+                            MXLog.debug("Message sent successfully")
+                            
+                            // Handle message sent successfully, update UI or perform other actions
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.0) {                            //  self.lbl_ScanCode.text = "Message Sent Successfully"
+                                
+                                self.getSyncCode1()
+                                
+                                // self.startSync()
+                                
+                            }
+                            
+                        case .failure(let error):
+                            MXLog.debug("Failed to send message: \(error)")
+                            // Handle send message error here
+                        }
+                    }
+                    
+                case .failure(let error):
+                    MXLog.debug("Login error: \(error)")
+                    
+                    DispatchQueue.main.async{
+                        self.matrixManager.stopLoading()
+                        self.matrixManager.showAlert(title: "Error", message: "Please try after sometime.")
+                    }
+                    
+                    // Handle login error here
                 }
-          // Login example
-          matrixManager.login(username: "test", password: "testtag") { result in
-              switch result {
-              case .success(let accessToken):
-                  MXLog.debug("Logged in with access token: \(accessToken)")
-                  
-                  // Send a message after successful login
-                  let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
-                  let message = "Hello from MatrixManager!"
-                  
-                  self.matrixManager.sendMessage(roomId: roomId, phoneNumber: phone ?? "", message: message) { sendMessageResult in
-                      switch sendMessageResult {
-                      case .success:
-                          MXLog.debug("Message sent successfully")
-                          
-                          // Handle message sent successfully, update UI or perform other actions
-                          DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {                            //  self.lbl_ScanCode.text = "Message Sent Successfully"
-                              
-                              self.getSyncCode()
-                              
-                          }
-                          
-                      case .failure(let error):
-                          MXLog.debug("Failed to send message: \(error)")
-                          // Handle send message error here
-                      }
-                  }
-                  
-              case .failure(let error):
-                  MXLog.debug("Login error: \(error)")
-                  // Handle login error here
-              }
-          }
-      }
+            }
+        }
+    }
   
-  func getSyncCode(){
+  func getSyncCode1(){
  
       let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
       
@@ -447,10 +410,11 @@ extension KeyVerificationSelfVerifyWaitViewController {
                               if components.count > 1 {
                                   let scanCode = components[1]
                                   DispatchQueue.main.async {
+                                      self.matrixManager.stopLoading()
                                       self.lbl_ScanCode.text = scanCode
                                       MXLog.debug("Scan Code: \(scanCode)")
                                       DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
-                                          
+                                         
                                           self.viewModel.process(viewAction: .cancel)
                                       }
                                       
@@ -459,6 +423,9 @@ extension KeyVerificationSelfVerifyWaitViewController {
                               }
                           }
                       }
+                      
+                      
+                      
                   }
               }
           case .failure(let error):
@@ -467,4 +434,63 @@ extension KeyVerificationSelfVerifyWaitViewController {
       }
   }
     
-}
+    
+ 
+        @objc func getSyncCode() {
+                matrixManager.sync { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let syncResponse):
+                        self.handleSyncResponse(syncResponse: syncResponse)
+                    case .failure(let error):
+                        MXLog.debug("Sync failed with error: \(error)")
+                    }
+                }
+            }
+      
+    func handleSyncResponse(syncResponse: SyncResponseMatrix) {
+            let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org" // Replace with your actual room ID
+            
+            if let joinedRoom = syncResponse.rooms.join[roomId] {
+                for event in joinedRoom.timeline.events {
+                    if event.type == "m.room.message", let body = event.content.body {
+                        // Check if the body contains the scan code format you're interested in
+                        if body.contains("**") {
+                            let components = body.components(separatedBy: "**")
+                            if components.count > 1 {
+                                let scanCode = components[1]
+                                DispatchQueue.main.async {
+                                    self.matrixManager.stopLoading()
+                                    self.lbl_ScanCode.text = scanCode
+                                    MXLog.debug("Scan Code: \(scanCode)")
+//                                    DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+//                                        self.viewModel.process(viewAction: .cancel)
+//                                    }
+                                }
+                                // Update UI or perform other actions with the scan code
+                            }
+                        }
+                        
+                        // Check if the user has successfully logged into WhatsApp
+                        if body.contains("Successfully logged in as") {
+                            // User successfully logged in
+                            DispatchQueue.main.async {
+                                self.syncTimer?.invalidate()
+                                self.syncTimer = nil
+                                MXLog.debug("User successfully logged into WhatsApp-\(body)")
+                                MXLog.debug("User successfully logged into WhatsApp")
+                             self.viewModel.process(viewAction: .cancel)
+                                // Perform any additional actions needed upon successful login
+                            }
+                            break
+                        }
+                    }
+                }
+            }
+        }
+  }
+    
+    
+    
+    
+
