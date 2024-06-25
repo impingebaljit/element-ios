@@ -365,9 +365,9 @@ extension KeyVerificationSelfVerifyWaitViewController {
                             // Handle message sent successfully, update UI or perform other actions
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.0) {                            //  self.lbl_ScanCode.text = "Message Sent Successfully"
                                 
-                                self.getSyncCode1()
+                                //self.getSyncCode1()
                                 
-                                // self.startSync()
+                                self.startSync()
                                 
                             }
                             
