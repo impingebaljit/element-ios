@@ -32,7 +32,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -48,10 +50,10 @@
 			</array>
 		</dict>
 	</array>
-	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
-	<true/>
+	<false/>
+	<key>MinimumOSVersion</key>
+	<string>15.0</string>
 	<key>ITSEncryptionExportComplianceCode</key>
 	<string>d1dd539c-d21c-43e2-92e2-212c5269565c</string>
 	<key>LSApplicationQueriesSchemes</key>

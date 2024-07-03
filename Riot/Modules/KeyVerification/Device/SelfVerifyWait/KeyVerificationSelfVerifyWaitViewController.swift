@@ -323,7 +323,7 @@ extension KeyVerificationSelfVerifyWaitViewController {
 //}
 
 
-extension KeyVerificationSelfVerifyWaitViewController {
+extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
     
     func startSync() {
             syncTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(getSyncCode), userInfo: nil, repeats: true)
@@ -488,7 +488,15 @@ extension KeyVerificationSelfVerifyWaitViewController {
                 }
             }
         }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        tf_PhoneNumber.resignFirstResponder()
+            return true
+        }
   }
+
+
+
     
     
     
