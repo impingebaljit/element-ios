@@ -1620,11 +1620,11 @@
 "thread_copy_link_to_thread" = "Link in Thread kopieren";
 
 // MARK: Threads
-"room_thread_title" = "Thread";
+"room_thread_title" = "Thread446";
 "room_accessibility_thread_more" = "Mehr";
 "room_accessibility_threads" = "Threads";
 "room_event_copy_link_info" = "Link in die Zwischenablage kopiert.";
-"room_event_action_reply_in_thread" = "Thread";
+"room_event_action_reply_in_thread" = "Thread1233";
 "room_event_action_view_in_room" = "Im Raum anzeigen";
 "location_sharing_open_open_street_maps" = "In OpenStreetMap öffnen";
 "onboarding_use_case_title" = "Mit wem wirst du am meisten schreiben?";

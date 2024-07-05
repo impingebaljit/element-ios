@@ -703,7 +703,7 @@ public class VectorL10n: NSObject {
   public static var authenticationLoginForgotPassword: String { 
     return VectorL10n.tr("Vector", "authentication_login_forgot_password") 
   }
-  /// Welcome back!
+  /// Welcome to ZapChat
   public static var authenticationLoginTitle: String { 
     return VectorL10n.tr("Vector", "authentication_login_title") 
   }

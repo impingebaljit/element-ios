@@ -106,7 +106,7 @@ struct AuthenticationServerSelectionScreen: View {
     
     /// The text field, extracted for iOS 15 modifiers to be applied.
     var textField: some View {
-        TextField(VectorL10n.authenticationServerSelectionServerUrl, text: $viewModel.homeserverAddress) {
+        TextField(VectorL10n.authenticationServerSelectionServerUrl, text: .constant(viewModel.homeserverAddress)) {
             isEditingTextField = $0
         }
         .keyboardType(.URL)
@@ -116,6 +116,9 @@ struct AuthenticationServerSelectionScreen: View {
                                                 isError: viewModel.viewState.isShowingFooterError))
         .onChange(of: viewModel.homeserverAddress) { _ in viewModel.send(viewAction: .clearFooterError) }
         .accessibilityIdentifier("addressTextField")
+        .disabled(/*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+        
+        
     }
     
     @ToolbarContentBuilder

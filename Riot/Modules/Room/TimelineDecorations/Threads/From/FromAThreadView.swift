@@ -21,7 +21,7 @@ import Reusable
 class FromAThreadView: UIView {
 
     private enum Constants {
-        static let viewHeight: CGFloat = 18
+        static let viewHeight: CGFloat = 0
     }
 
     @IBOutlet private weak var iconView: UIImageView!

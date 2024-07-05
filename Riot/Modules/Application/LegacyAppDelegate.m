@@ -4106,7 +4106,7 @@ NSString *const AppDelegateUniversalLinkDidChangeNotification = @"AppDelegateUni
 - (void)checkAppVersion
 {
     // Check if we should display a major update alert
-    [self checkMajorUpdate];
+    //[self checkMajorUpdate];
     
     // Update the last app version used
     [AppVersion updateLastUsedVersion];
@@ -4118,7 +4118,7 @@ NSString *const AppDelegateUniversalLinkDidChangeNotification = @"AppDelegateUni
     {
         // When you do not understand why the UI does not work as expected...
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self showMajorUpdate];
+           // [self showMajorUpdate];
         });
     }
 }

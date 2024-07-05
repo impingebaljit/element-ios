@@ -45,8 +45,8 @@ class AllChatsViewController: HomeViewController {
     }
     
     // MARK: - Properties
-    let baseUrl = "https://matrix.tag.org"
-    let accessToken = "syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v"
+//    let baseUrl = "https://matrix.tag.org"
+//    let accessToken = "syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v"
     
     
     weak var allChatsDelegate: AllChatsViewControllerDelegate?

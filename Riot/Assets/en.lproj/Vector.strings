@@ -153,7 +153,7 @@
 "authentication_registration_password_footer" = "Must be 8 characters or more";
 "authentication_server_info_title" = "Where your conversations will live";
 
-"authentication_login_title" = "Welcome back!";
+"authentication_login_title" = "Welcome to ZapChat";
 "authentication_login_username" = "Username / Email / Phone";
 "authentication_login_forgot_password" = "Forgot password";
 "authentication_server_info_title_login" = "Where your conversations live";
