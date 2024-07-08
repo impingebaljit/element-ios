@@ -17,9 +17,25 @@
  */
 
 import UIKit
+import ADCountryPicker
 
 
-final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
+ class KeyVerificationSelfVerifyWaitViewController: UIViewController, ADCountryPickerDelegate {
+    
+     func countryPicker(_ picker: ADCountryPicker, didSelectCountryWithName name: String, code: String, dialCode: String) {
+         _ = picker.navigationController?.popToRootViewController(animated: true)
+         self.dismiss(animated: true, completion: nil)
+         tf_CountryCode.text = dialCode
+         //countryCodeLabel.text = code
+        // countryCallingCodeLabel.text = dialCode
+         
+        let x =  picker.getFlag(countryCode: code)
+         let xx =  picker.getCountryName(countryCode: code)
+         let xxx =  picker.getDialCode(countryCode: code)
+     }
+   
+
+    
     
     // MARK: - Constants
     
@@ -32,7 +48,14 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     // MARK: Outlets
   
     private var syncTimer: Timer?
+    var countryPhoneCode = ""
     
+    var countryPicker: ADCountryPicker!
+    
+    @IBOutlet weak var countryButton: UIButton!
+     
+    
+    @IBOutlet weak var tf_CountryCode: UITextField!
     @IBOutlet weak var tf_PhoneNumber: UITextField!
     @IBOutlet weak var lbl_ScanCode: UILabel!
     @IBOutlet weak var btnConnectWhatsApp: RoundedButton!
@@ -81,17 +104,21 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-       // self.setupViews()
-     //   self.activityPresenter = ActivityIndicatorPresenter()
-       // self.errorPresenter = MXKErrorAlertPresentation()
+        // self.setupViews()
+        //   self.activityPresenter = ActivityIndicatorPresenter()
+        // self.errorPresenter = MXKErrorAlertPresentation()
         
-     //   self.registerThemeServiceDidChangeThemeNotification()
+        //   self.registerThemeServiceDidChangeThemeNotification()
         //self.update(theme: self.theme)
         
-      //  self.viewModel.viewDelegate = self
-      //  self.viewModel.process(viewAction: .loadData)
+        //  self.viewModel.viewDelegate = self
+        //  self.viewModel.process(viewAction: .loadData)
         
         //startSync()
+        
+        
+        
+        
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -239,15 +266,42 @@ final class KeyVerificationSelfVerifyWaitViewController: UIViewController {
     }
     
     
-    @IBAction func acn_SyncCode(_ sender: Any) {
+    @IBAction private func acn_SyncCode(_ sender: Any) {
         //self.getSyncCode()
+        
+        tf_PhoneNumber.resignFirstResponder()
         
         callSyncApi()
     }
-    @IBAction func acn_ConnectWithWhatsApp(_ sender: Any) {
+    @IBAction private func acn_ConnectWithWhatsApp(_ sender: Any) {
         
        // callSyncApi()
         //self.viewModel.process(viewAction: .cancel)
+    }
+    
+    
+    @IBAction private func acn_CountryCode(_ sender: Any) {
+        
+        
+        let picker = ADCountryPicker(style: .grouped)
+        // delegate
+        picker.delegate = self
+
+        // Display calling codes
+        picker.showCallingCodes = true
+
+        // or closure
+        picker.didSelectCountryClosure = { name, code in
+            _ = picker.navigationController?.popToRootViewController(animated: true)
+            MXLog.debug(code)
+        }
+        
+        
+//        Use this below code to present the picker
+        
+        let pickerNavigationController = UINavigationController(rootViewController: picker)
+        self.present(pickerNavigationController, animated: true, completion: nil)
+        
     }
     
     @IBAction private func recoverSecretsButtonAction(_ sender: Any) {
@@ -346,9 +400,15 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
             self.matrixManager.startLoading(in: self)
         }
         
+        let usernameS = UserDefaults.standard.string(forKey: "Username") ?? ""
+        let passwordS = UserDefaults.standard.string(forKey: "Password") ?? ""
+        
+        
+        
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             // Login example
-            self.matrixManager.login(username: "test", password: "testtag") { result in
+            self.matrixManager.login(username: usernameS, password: passwordS) { result in
                 switch result {
                 case .success(let accessToken):
                     MXLog.debug("Logged in with access token: \(accessToken)")
@@ -479,6 +539,9 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
                                 self.syncTimer = nil
                                 MXLog.debug("User successfully logged into WhatsApp-\(body)")
                                 MXLog.debug("User successfully logged into WhatsApp")
+                                
+                                UserDefaults.standard.set(true, forKey: "UserLoggedIn")
+                                
                              self.viewModel.process(viewAction: .cancel)
                                 // Perform any additional actions needed upon successful login
                             }

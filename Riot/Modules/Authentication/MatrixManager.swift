@@ -20,8 +20,6 @@ import Foundation
 import MatrixSDK
 
 
-import Foundation
-
 class MatrixManager {
     private let baseUrl: String
     private var accessToken: String?

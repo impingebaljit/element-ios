@@ -114,10 +114,17 @@ class AllChatsCoordinator: NSObject, SplitViewMasterCoordinatorProtocol {
             self.allChatsViewController = allChatsViewController
             self.navigationRouter.setRootModule(allChatsViewController)
             
-            // Add existing Matrix sessions if any
-            for userSession in self.parameters.userSessionsService.userSessions {
-                self.addMatrixSessionToAllChatsController(userSession.matrixSession)
-            }
+            
+           
+                
+                
+                // Add existing Matrix sessions if any
+                for userSession in self.parameters.userSessionsService.userSessions {
+                    self.addMatrixSessionToAllChatsController(userSession.matrixSession)
+                }
+            
+            
+            
             
             self.registerUserSessionsServiceNotifications()
             self.registerSessionChange()

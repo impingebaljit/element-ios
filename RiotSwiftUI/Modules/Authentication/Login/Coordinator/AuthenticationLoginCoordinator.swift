@@ -157,6 +157,8 @@ final class AuthenticationLoginCoordinator: Coordinator, Presentable {
             MXLog.failure("[AuthenticationLoginCoordinator] The login wizard was requested before getting the login flow.")
             return
         }
+        UserDefaults.standard.set(username, forKey: "Username")
+        UserDefaults.standard.set(password, forKey: "Password")
         
         startLoading(isInteractionBlocking: true)
         

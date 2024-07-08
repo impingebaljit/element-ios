@@ -418,6 +418,10 @@ NSString *const AppDelegateUniversalLinkDidChangeNotification = @"AppDelegateUni
     MXLogDebug(@"[AppDelegate] didFinishLaunchingWithOptions: isProtectedDataAvailable: %@", @([application isProtectedDataAvailable]));
 
     _configuration = [AppConfiguration new];
+    
+//    if UserDefaults.standard.bool(forKey: "UserLoggedIn") {
+//        
+//    }
 
     self.clearingCache = NO;
     // Log app information
@@ -479,7 +483,11 @@ NSString *const AppDelegateUniversalLinkDidChangeNotification = @"AppDelegateUni
     self.uisiAutoReporter = [[UISIAutoReporter alloc] init];
 
     // Add matrix observers, and initialize matrix sessions if the app is not launched in background.
-    [self initMatrixSessions];
+    
+   // if UserDefaults.standard.bool(forKey: "UserLoggedIn") {
+        [self initMatrixSessions];
+   // }
+   
     
 #ifdef CALL_STACK_JINGLE
     // Setup Jitsi

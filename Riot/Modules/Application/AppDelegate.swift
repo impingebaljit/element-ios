@@ -59,18 +59,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
         
-        // Create AppCoordinator
-        self.rootRouter = RootRouter(window: window)
         
-        let appCoordinator = AppCoordinator(router: self.rootRouter, window: window)
-        appCoordinator.start()
-        self.legacyAppDelegate.delegate = appCoordinator
-        
-        self.appCoordinator = appCoordinator
-        
-        // Call legacy AppDelegate
-        self.legacyAppDelegate.window = window
-        self.legacyAppDelegate.application(application, didFinishLaunchingWithOptions: launchOptions)
+       // if UserDefaults.standard.bool(forKey: "UserLoggedIn") {
+            
+            
+            
+            // Create AppCoordinator
+            self.rootRouter = RootRouter(window: window)
+            
+            let appCoordinator = AppCoordinator(router: self.rootRouter, window: window)
+            appCoordinator.start()
+            self.legacyAppDelegate.delegate = appCoordinator
+            
+            self.appCoordinator = appCoordinator
+            
+            // Call legacy AppDelegate
+            self.legacyAppDelegate.window = window
+            self.legacyAppDelegate.application(application, didFinishLaunchingWithOptions: launchOptions)
+//        }
+//        else{
+//            "USer No Logged In"
+//        }
         
         return true
     }

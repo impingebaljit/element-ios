@@ -1,4 +1,5 @@
 PODS:
+  - ADCountryPicker (2.1.0)
   - AFNetworking (4.0.1):
     - AFNetworking/NSURLSession (= 4.0.1)
     - AFNetworking/Reachability (= 4.0.1)
@@ -91,6 +92,7 @@ PODS:
   - ZXingObjC/All (3.6.9)
 
 DEPENDENCIES:
+  - ADCountryPicker
   - Down (~> 0.11.0)
   - DSBottomSheet (~> 0.3)
   - DSWaveformImage (~> 6.1.1)
@@ -121,6 +123,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - ADCountryPicker
     - AFNetworking
     - BlueCryptor
     - BlueECC
@@ -163,6 +166,7 @@ SPEC REPOS:
     - ZXingObjC
 
 SPEC CHECKSUMS:
+  ADCountryPicker: 502cee76a30ea1c3834eb0df170ce635691655c9
   AFNetworking: 3bd23d814e976cd148d7d44c3ab78017b744cd58
   BlueCryptor: b0aee3d9b8f367b49b30de11cda90e1735571c24
   BlueECC: 0d18e93347d3ec6d41416de21c1ffa4d4cd3c2cc
@@ -204,6 +208,6 @@ SPEC CHECKSUMS:
   zxcvbn-ios: fef98b7c80f1512ff0eec47ac1fa399fc00f7e3c
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: 6520f54cdc135a1d0e7a8b825be8ee878cd06240
+PODFILE CHECKSUM: 02301a07255484a3788ec55ee17a5d2c038550c8
 
 COCOAPODS: 1.15.2
