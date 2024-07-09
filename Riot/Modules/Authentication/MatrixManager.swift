@@ -38,8 +38,11 @@ class MatrixManager {
       }
 
       func stopLoading() {
-        activityIndicator.removeFromSuperview() // Remove from any view it's currently in
-        activityIndicator.stopAnimating()
+          DispatchQueue.main.async {
+              self.activityIndicator.removeFromSuperview() // Remove from any view it's currently in
+              self.activityIndicator.stopAnimating()
+          }
+       
       }
     
     

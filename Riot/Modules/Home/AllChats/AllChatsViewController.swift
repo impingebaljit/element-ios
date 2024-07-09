@@ -45,8 +45,7 @@ class AllChatsViewController: HomeViewController {
     }
     
     // MARK: - Properties
-//    let baseUrl = "https://matrix.tag.org"
-//    let accessToken = "syt_dGVzdA_HsFzrJXjnQagJgARzPQR_29uu8v"
+
     
     
     weak var allChatsDelegate: AllChatsViewControllerDelegate?
@@ -117,7 +116,7 @@ class AllChatsViewController: HomeViewController {
     private var toolbarHeight: CGFloat = 0
     
     
-    let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
+    let matrixManager = MatrixManager(baseUrl: "https://oldmatrix.tag.org/_matrix/client/r0")
 
     // MARK: - Lifecycle
     
@@ -171,25 +170,38 @@ class AllChatsViewController: HomeViewController {
         
         // Check whether we're not logged in
         let authIsShown: Bool
-        if MXKAccountManager.shared().accounts.isEmpty {
-            showOnboardingFlow()
-            authIsShown = true
-        } else {
-            // Display a login screen if the account is soft logout
-            // Note: We support only one account
-            if let account = MXKAccountManager.shared().accounts.first, account.isSoftLogout {
-                showSoftLogoutOnboardingFlow(with: account.mxCredentials)
+        
+        
+        //if UserDefaults.standard.bool(forKey: "UserLoggedIn") {
+            
+            // if user logged in then open the All Chat view controller otherwise not
+            
+            if MXKAccountManager.shared().accounts.isEmpty {
+                showOnboardingFlow()
                 authIsShown = true
             } else {
-                authIsShown = false
+                // Display a login screen if the account is soft logout
+                // Note: We support only one account
+                if let account = MXKAccountManager.shared().accounts.first, account.isSoftLogout {
+                    showSoftLogoutOnboardingFlow(with: account.mxCredentials)
+                    authIsShown = true
+                } else {
+                    authIsShown = false
+                }
             }
-        }
+            
+            guard !authIsShown else {
+                return
+            }
+            
+            AppDelegate.theDelegate().checkAppVersion()
+            
+       // }
         
-        guard !authIsShown else {
-            return
-        }
-
-        AppDelegate.theDelegate().checkAppVersion()
+      //  else{
+        //    showOnboardingFlow()
+        //    authIsShown = true
+       // }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -1089,9 +1101,13 @@ extension AllChatsViewController: SplitViewMasterViewControllerProtocol {
             resetReviewSessionsFlags()
         }
         
+        
+
         AppDelegate.theDelegate().restoreInitialDisplay {
             self.presentOnboardingFlow()
         }
+            
+            
     }
 
     private func resetReviewSessionsFlags() {

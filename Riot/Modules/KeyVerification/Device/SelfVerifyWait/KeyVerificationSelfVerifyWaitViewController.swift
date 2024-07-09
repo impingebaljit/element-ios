@@ -82,7 +82,7 @@ import ADCountryPicker
     
     private weak var cancelBarButtonItem: UIBarButtonItem?
     
-    let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
+    let matrixManager = MatrixManager(baseUrl: "https://oldmatrix.tag.org/_matrix/client/r0")
 
     
     
@@ -269,6 +269,7 @@ import ADCountryPicker
     @IBAction private func acn_SyncCode(_ sender: Any) {
         //self.getSyncCode()
         
+      
         tf_PhoneNumber.resignFirstResponder()
         
         callSyncApi()
@@ -291,9 +292,12 @@ import ADCountryPicker
         picker.showCallingCodes = true
 
         // or closure
-        picker.didSelectCountryClosure = { name, code in
+        picker.didSelectCountryWithCallingCodeClosure = { name, code, callingCode in
             _ = picker.navigationController?.popToRootViewController(animated: true)
             MXLog.debug(code)
+            MXLog.debug(callingCode)
+            
+            self.countryPhoneCode = callingCode
         }
         
         
@@ -389,10 +393,14 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
    
     
     func callSyncApi() {
-        let phone = tf_PhoneNumber.text
-        guard let phoneNumber = phone, !phone!.isEmpty else {
+        
+        let getPhone = countryPhoneCode + (tf_PhoneNumber.text ?? "")
+        MXLog.debug(getPhone)
+        
+        
+      
+        guard !getPhone.isEmpty else {
             MXLog.debug("Please enter your phone number.")
-            
             matrixManager.showAlert(title: "Error", message: "Please enter your phone number.")
             return
         }
@@ -417,7 +425,7 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
                     let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
                     let message = "Hello from MatrixManager!"
                     
-                    self.matrixManager.sendMessage(roomId: roomId, phoneNumber: phone ?? "", message: message) { sendMessageResult in
+                    self.matrixManager.sendMessage(roomId: roomId, phoneNumber: getPhone ?? "", message: message) { sendMessageResult in
                         switch sendMessageResult {
                         case .success:
                             MXLog.debug("Message sent successfully")
@@ -439,16 +447,29 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
                     
                 case .failure(let error):
                     MXLog.debug("Login error: \(error)")
-                    
-                    DispatchQueue.main.async{
-                        self.matrixManager.stopLoading()
-                        self.matrixManager.showAlert(title: "Error", message: "Please try after sometime.")
+                    self.matrixManager.stopLoading()
+//                    DispatchQueue.main.async{
+//                        self.matrixManager.stopLoading()
+//                        self.matrixManager.showAlert(title: "Error", message: error as! String)
+//                    }
+                  
+                    if let errorMessage = error as? String {
+                        DispatchQueue.main.async {
+                            self.matrixManager.showAlert(title: "Error", message: errorMessage)
+                        }
+                        } else {
+                            
+                            DispatchQueue.main.async {
+                                self.matrixManager.showAlert(title: "Error", message: "Too many requests have been sent.")
+                            }
+                        }
                     }
+                    
                     
                     // Handle login error here
                 }
             }
-        }
+        
     }
   
   func getSyncCode1(){

@@ -103,14 +103,14 @@ final class BuildSettings: NSObject {
 
     /// Default server proposed on the authentication screen
     static var serverConfigDefaultHomeserverUrlString: String {
-        MDMSettings.serverConfigDefaultHomeserverUrlString ?? "https://matrix.tag.org"
+        MDMSettings.serverConfigDefaultHomeserverUrlString ?? "https://oldmatrix.tag.org"
     }
     
     /// Default identity server
     static let serverConfigDefaultIdentityServerUrlString = "https://vector.im"
         
     static var serverConfigSygnalAPIUrlString: String {
-        MDMSettings.serverConfigSygnalAPIUrlString ?? "https://matrix.org/_matrix/push/v1/notify"
+        MDMSettings.serverConfigSygnalAPIUrlString ?? "https://oldmatrix.org/_matrix/push/v1/notify"
     }
     
     // MARK: - Legal URLs

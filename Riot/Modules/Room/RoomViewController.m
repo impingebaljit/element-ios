@@ -2034,7 +2034,7 @@ static CGSize kThreadListBarButtonItemImageSize;
                     rightBarButtonItems = [NSMutableArray new];
                 }
                 UIBarButtonItem *itemThreadMore = [self threadMoreBarButtonItem];
-                [rightBarButtonItems insertObject:itemThreadMore atIndex:0];
+               [rightBarButtonItems insertObject:itemThreadMore atIndex:0];
             }
             else
             {
@@ -2042,7 +2042,7 @@ static CGSize kThreadListBarButtonItemImageSize;
                 UIBarButtonItem *itemThreadList = [self threadListBarButtonItem];
                 [self updateThreadListBarButtonItem:itemThreadList
                                                with:self.mainSession.threadingService];
-                [rightBarButtonItems insertObject:itemThreadList atIndex:0];
+              [rightBarButtonItems insertObject:itemThreadList atIndex:0];
             }
         }
     }
