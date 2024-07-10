@@ -116,7 +116,7 @@ class AllChatsViewController: HomeViewController {
     private var toolbarHeight: CGFloat = 0
     
     
-    let matrixManager = MatrixManager(baseUrl: "https://oldmatrix.tag.org/_matrix/client/r0")
+    let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
 
     // MARK: - Lifecycle
     

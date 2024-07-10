@@ -592,17 +592,17 @@ SSOAuthenticationPresenterDelegate>
     Section *sectionAbout = [Section sectionWithTag:SECTION_TAG_ABOUT];
     if (BuildSettings.applicationCopyrightUrlString.length)
     {
-        [sectionAbout addRowWithTag:ABOUT_COPYRIGHT_INDEX];
+       // [sectionAbout addRowWithTag:ABOUT_COPYRIGHT_INDEX];
     }
     if (BuildSettings.applicationAcceptableUsePolicyUrlString.length)
     {
-        [sectionAbout addRowWithTag:ABOUT_ACCEPTABLE_USE_INDEX];
+      //  [sectionAbout addRowWithTag:ABOUT_ACCEPTABLE_USE_INDEX];
     }
     if (BuildSettings.applicationPrivacyPolicyUrlString.length)
     {
-        [sectionAbout addRowWithTag:ABOUT_PRIVACY_INDEX];
+       // [sectionAbout addRowWithTag:ABOUT_PRIVACY_INDEX];
     }
-    [sectionAbout addRowWithTag:ABOUT_THIRD_PARTY_INDEX];
+   // [sectionAbout addRowWithTag:ABOUT_THIRD_PARTY_INDEX];
     sectionAbout.headerTitle = VectorL10n.settingsAbout;
 
     if (BuildSettings.settingsScreenShowAdvancedSettings)

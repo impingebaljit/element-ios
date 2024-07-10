@@ -46,7 +46,7 @@ struct AuthenticationState {
         var addressFromUser: String?
         /// The homeserver's address formatted to be displayed to the user in labels, text fields etc.
         var displayableAddress: String {
-            let address = "oldmatrix.tag.org" //"matrix.tag.org"//addressFromUser ?? address
+            let address = "matrix.tag.org" //"matrix.tag.org"//addressFromUser ?? address
             return address.replacingOccurrences(of: "https://", with: "") // Only remove https. Leave http to indicate the server doesn't use SSL.
         }
         

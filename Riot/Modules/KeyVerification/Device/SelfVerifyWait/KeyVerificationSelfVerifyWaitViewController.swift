@@ -82,7 +82,7 @@ import ADCountryPicker
     
     private weak var cancelBarButtonItem: UIBarButtonItem?
     
-    let matrixManager = MatrixManager(baseUrl: "https://oldmatrix.tag.org/_matrix/client/r0")
+    let matrixManager = MatrixManager(baseUrl: "https://matrix.tag.org/_matrix/client/r0")
 
     
     
@@ -269,7 +269,6 @@ import ADCountryPicker
     @IBAction private func acn_SyncCode(_ sender: Any) {
         //self.getSyncCode()
         
-      
         tf_PhoneNumber.resignFirstResponder()
         
         callSyncApi()
@@ -284,6 +283,7 @@ import ADCountryPicker
     @IBAction private func acn_CountryCode(_ sender: Any) {
         
         
+        
         let picker = ADCountryPicker(style: .grouped)
         // delegate
         picker.delegate = self
@@ -292,12 +292,15 @@ import ADCountryPicker
         picker.showCallingCodes = true
 
         // or closure
-        picker.didSelectCountryWithCallingCodeClosure = { name, code, callingCode in
+        picker.didSelectCountryWithCallingCodeClosure = { name, code, callingCode  in
             _ = picker.navigationController?.popToRootViewController(animated: true)
+            MXLog.debug(code)
+            
             MXLog.debug(code)
             MXLog.debug(callingCode)
             
             self.countryPhoneCode = callingCode
+
         }
         
         
@@ -346,17 +349,17 @@ extension KeyVerificationSelfVerifyWaitViewController {
 }
 //
 //    private var navigationRouter: NavigationRouterType { parameters.navigationRouter }
-//    
+//
 //    func pushToWhatsAppConnectScreen() {
 //        MXLog.debug("[KeyVerificationSelfVerifyWaitViewController] pushToWhatsAppConnectScreen")
-//        
+//
 //        // Create a modal router
 //        let modalRouter = NavigationRouter()
-//        
+//
 //        // Create the coordinator for the WhatsApp screen (replace with appropriate coordinator if needed)
 //        let parameters = AuthenticationForgotPasswordCoordinatorParameters(navigationRouter: modalRouter, loginWizard: loginWizard, homeserver: parameters.authenticationService.state.homeserver)
 //        let coordinator = AuthenticationForgotPasswordCoordinator(parameters: parameters)
-//        
+//
 //        // Define the callback to handle the result
 //        coordinator.callback = { [weak self, weak coordinator] result in
 //            guard let self = self, let coordinator = coordinator else { return }
@@ -369,11 +372,11 @@ extension KeyVerificationSelfVerifyWaitViewController {
 //            }
 //            self.remove(childCoordinator: coordinator)
 //        }
-//        
+//
 //        // Start the coordinator
 //        coordinator.start()
 //        add(childCoordinator: coordinator)
-//        
+//
 //        // Set the root module for the modal router and present it
 //        modalRouter.setRootModule(coordinator)
 //        navigationRouter.present(modalRouter, animated: true)
@@ -393,6 +396,9 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
    
     
     func callSyncApi() {
+       // let phone = tf_PhoneNumber.text
+        
+        
         
         let getPhone = countryPhoneCode + (tf_PhoneNumber.text ?? "")
         MXLog.debug(getPhone)
@@ -400,7 +406,11 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
         
       
         guard !getPhone.isEmpty else {
+
+        
+       // guard let phoneNumber = phone, !phone!.isEmpty else {
             MXLog.debug("Please enter your phone number.")
+            
             matrixManager.showAlert(title: "Error", message: "Please enter your phone number.")
             return
         }
@@ -422,7 +432,8 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
                     MXLog.debug("Logged in with access token: \(accessToken)")
                     
                     // Send a message after successful login
-                    let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+                    //let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
+                    let roomId = "!XcbYQXSaKFslRcsRLC:matrix.tag.org"
                     let message = "Hello from MatrixManager!"
                     
                     self.matrixManager.sendMessage(roomId: roomId, phoneNumber: getPhone ?? "", message: message) { sendMessageResult in
@@ -447,29 +458,16 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
                     
                 case .failure(let error):
                     MXLog.debug("Login error: \(error)")
-                    self.matrixManager.stopLoading()
-//                    DispatchQueue.main.async{
-//                        self.matrixManager.stopLoading()
-//                        self.matrixManager.showAlert(title: "Error", message: error as! String)
-//                    }
-                  
-                    if let errorMessage = error as? String {
-                        DispatchQueue.main.async {
-                            self.matrixManager.showAlert(title: "Error", message: errorMessage)
-                        }
-                        } else {
-                            
-                            DispatchQueue.main.async {
-                                self.matrixManager.showAlert(title: "Error", message: "Too many requests have been sent.")
-                            }
-                        }
-                    }
                     
+                    DispatchQueue.main.async{
+                        self.matrixManager.stopLoading()
+                        self.matrixManager.showAlert(title: "Error", message: "Please try after sometime.")
+                    }
                     
                     // Handle login error here
                 }
             }
-        
+        }
     }
   
   func getSyncCode1(){
@@ -530,7 +528,9 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
             }
       
     func handleSyncResponse(syncResponse: SyncResponseMatrix) {
-            let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org" // Replace with your actual room ID
+          //  let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org" // Replace with your actual room ID
+        
+        let roomId = "!XcbYQXSaKFslRcsRLC:matrix.tag.org"
             
             if let joinedRoom = syncResponse.rooms.join[roomId] {
                 for event in joinedRoom.timeline.events {
@@ -585,4 +585,5 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
     
     
     
+
 

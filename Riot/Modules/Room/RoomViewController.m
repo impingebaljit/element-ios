@@ -1757,33 +1757,33 @@ static CGSize kThreadListBarButtonItemImageSize;
     return item;
 }
 
-- (UIBarButtonItem *)threadMoreBarButtonItem
-{
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:AssetImages.roomContextMenuMore.image
-                                                             style:UIBarButtonItemStylePlain
-                                                            target:self
-                                                            action:@selector(onButtonPressed:)];
-    item.accessibilityLabel = [VectorL10n roomAccessibilityThreadMore];
-    
-    return item;
-}
+//- (UIBarButtonItem *)threadMoreBarButtonItem
+//{
+//    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:AssetImages.roomContextMenuMore.image
+//                                                             style:UIBarButtonItemStylePlain
+//                                                            target:self
+//                                                            action:@selector(onButtonPressed:)];
+//    item.accessibilityLabel = [VectorL10n roomAccessibilityThreadMore];
+//    
+//    return item;
+//}
 
-- (UIBarButtonItem *)threadListBarButtonItem
-{
-    UIButton *button = [UIButton new];
-    button.contentEdgeInsets = kThreadListBarButtonItemContentInsetsNoDot;
-    button.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [button setImage:[AssetImages.threadsIcon.image vc_resizedWith:kThreadListBarButtonItemImageSize]
-            forState:UIControlStateNormal];
-    [button addTarget:self
-               action:@selector(onThreadListTapped:)
-     forControlEvents:UIControlEventTouchUpInside];
-    button.accessibilityLabel = [VectorL10n roomAccessibilityThreads];
-
-    UIBarButtonItem *result = [[UIBarButtonItem alloc] initWithCustomView:button];
-    result.tag = kThreadListBarButtonItemTag;
-    return result;
-}
+//- (UIBarButtonItem *)threadListBarButtonItem
+//{
+//    UIButton *button = [UIButton new];
+//    button.contentEdgeInsets = kThreadListBarButtonItemContentInsetsNoDot;
+//    button.imageView.contentMode = UIViewContentModeScaleAspectFit;
+//    [button setImage:[AssetImages.threadsIcon.image vc_resizedWith:kThreadListBarButtonItemImageSize]
+//            forState:UIControlStateNormal];
+//    [button addTarget:self
+//               action:@selector(onThreadListTapped:)
+//     forControlEvents:UIControlEventTouchUpInside];
+//    button.accessibilityLabel = [VectorL10n roomAccessibilityThreads];
+//
+//    UIBarButtonItem *result = [[UIBarButtonItem alloc] initWithCustomView:button];
+//    result.tag = kThreadListBarButtonItemTag;
+//    return result;
+//}
 
 - (void)setupRemoveJitsiWidgetRemoveView
 {
@@ -2033,16 +2033,17 @@ static CGSize kThreadListBarButtonItemImageSize;
                 {
                     rightBarButtonItems = [NSMutableArray new];
                 }
-                UIBarButtonItem *itemThreadMore = [self threadMoreBarButtonItem];
+                UIBarButtonItem *itemThreadMore = nil;//[self threadMoreBarButtonItem];
                [rightBarButtonItems insertObject:itemThreadMore atIndex:0];
             }
             else
             {
                 //  in a regular timeline
-                UIBarButtonItem *itemThreadList = [self threadListBarButtonItem];
+                //UIBarButtonItem *itemThreadList = [self threadListBarButtonItem];
+                UIBarButtonItem *itemThreadList = nil;//[self threadListBarButtonItem];
                 [self updateThreadListBarButtonItem:itemThreadList
                                                with:self.mainSession.threadingService];
-              [rightBarButtonItems insertObject:itemThreadList atIndex:0];
+             // [rightBarButtonItems insertObject:itemThreadList atIndex:0];
             }
         }
     }
@@ -3960,7 +3961,7 @@ static CGSize kThreadListBarButtonItemImageSize;
     
     MXWeakify(self);
     
-    BOOL showThreadOption = [self showThreadOptionForEvent:selectedEvent];
+    BOOL showThreadOption = false;//[self showThreadOptionForEvent:selectedEvent];
     if (showThreadOption && [self canCopyEvent:selectedEvent andCell:cell])
     {
         MXKRoomBubbleTableViewCell *roomBubbleTableViewCell = (MXKRoomBubbleTableViewCell *)cell;
@@ -4270,67 +4271,67 @@ static CGSize kThreadListBarButtonItemImageSize;
             }
         }
         
-        if (BuildSettings.messageDetailsAllowPermalink)
-        {
-            [self.eventMenuBuilder addItemWithType:EventMenuItemTypePermalink
-                                            action:[UIAlertAction actionWithTitle:[VectorL10n roomEventActionPermalink]
-                                                                            style:UIAlertActionStyleDefault
-                                                                          handler:^(UIAlertAction * action) {
-                MXStrongifyAndReturnIfNil(self);
-                
-                [self cancelEventSelection];
-                
-                // Create a matrix.to permalink that is common to all matrix clients
-                NSString *permalink = [MXTools permalinkToEvent:selectedEvent.eventId inRoom:selectedEvent.roomId];
-                NSURL *url = [NSURL URLWithString:permalink];
-                
-                if (url)
-                {
-                    MXKPasteboardManager.shared.pasteboard.URL = url;
-                    [self.view vc_toastWithMessage:VectorL10n.roomEventCopyLinkInfo
-                                             image:AssetImages.linkIcon.image
-                                          duration:2.0
-                                          position:ToastPositionBottom
-                                  additionalMargin:self.roomInputToolbarContainerHeightConstraint.constant];
-                }
-                else
-                {
-                    MXLogDebug(@"[RoomViewController] Contextual menu permalink action failed. Permalink is nil room id/event id: %@/%@", selectedEvent.roomId, selectedEvent.eventId);
-                }
-            }]];
-        }
+      //  if (BuildSettings.messageDetailsAllowPermalink)
+//        {
+//            [self.eventMenuBuilder addItemWithType:EventMenuItemTypePermalink
+//                                            action:[UIAlertAction actionWithTitle:[VectorL10n roomEventActionPermalink]
+//                                                                            style:UIAlertActionStyleDefault
+//                                                                          handler:^(UIAlertAction * action) {
+//                MXStrongifyAndReturnIfNil(self);
+//                
+//                [self cancelEventSelection];
+//                
+//                // Create a matrix.to permalink that is common to all matrix clients
+//                NSString *permalink = [MXTools permalinkToEvent:selectedEvent.eventId inRoom:selectedEvent.roomId];
+//                NSURL *url = [NSURL URLWithString:permalink];
+//                
+//                if (url)
+//                {
+//                    MXKPasteboardManager.shared.pasteboard.URL = url;
+//                    [self.view vc_toastWithMessage:VectorL10n.roomEventCopyLinkInfo
+//                                             image:AssetImages.linkIcon.image
+//                                          duration:2.0
+//                                          position:ToastPositionBottom
+//                                  additionalMargin:self.roomInputToolbarContainerHeightConstraint.constant];
+//                }
+//                else
+//                {
+//                    MXLogDebug(@"[RoomViewController] Contextual menu permalink action failed. Permalink is nil room id/event id: %@/%@", selectedEvent.roomId, selectedEvent.eventId);
+//                }
+//            }]];
+//        }
         
-        if (BuildSettings.messageDetailsAllowViewSource)
-        {
-            [self.eventMenuBuilder addItemWithType:EventMenuItemTypeViewSource
-                                            action:[UIAlertAction actionWithTitle:[VectorL10n roomEventActionViewSource]
-                                                                            style:UIAlertActionStyleDefault
-                                                                          handler:^(UIAlertAction * action) {
-                MXStrongifyAndReturnIfNil(self);
-                
-                [self cancelEventSelection];
-                
-                // Display event details
-                [self showEventDetails:selectedEvent];
-            }]];
-            
-            
-            // Add "View Decrypted Source" for e2ee event we can decrypt
-            if (selectedEvent.isEncrypted && selectedEvent.clearEvent)
-            {
-                [self.eventMenuBuilder addItemWithType:EventMenuItemTypeViewDecryptedSource
-                                                action:[UIAlertAction actionWithTitle:[VectorL10n roomEventActionViewDecryptedSource]
-                                                                                style:UIAlertActionStyleDefault
-                                                                              handler:^(UIAlertAction * action) {
-                    MXStrongifyAndReturnIfNil(self);
-                    
-                    [self cancelEventSelection];
-                    
-                    // Display clear event details
-                    [self showEventDetails:selectedEvent.clearEvent];
-                }]];
-            }
-        }
+      //  if (BuildSettings.messageDetailsAllowViewSource)
+//        {
+//            [self.eventMenuBuilder addItemWithType:EventMenuItemTypeViewSource
+//                                            action:[UIAlertAction actionWithTitle:[VectorL10n roomEventActionViewSource]
+//                                                                            style:UIAlertActionStyleDefault
+//                                                                          handler:^(UIAlertAction * action) {
+//                MXStrongifyAndReturnIfNil(self);
+//                
+//                [self cancelEventSelection];
+//                
+//                // Display event details
+//                [self showEventDetails:selectedEvent];
+//            }]];
+//            
+//            
+//            // Add "View Decrypted Source" for e2ee event we can decrypt
+//            if (selectedEvent.isEncrypted && selectedEvent.clearEvent)
+//            {
+//                [self.eventMenuBuilder addItemWithType:EventMenuItemTypeViewDecryptedSource
+//                                                action:[UIAlertAction actionWithTitle:[VectorL10n roomEventActionViewDecryptedSource]
+//                                                                                style:UIAlertActionStyleDefault
+//                                                                              handler:^(UIAlertAction * action) {
+//                    MXStrongifyAndReturnIfNil(self);
+//                    
+//                    [self cancelEventSelection];
+//                    
+//                    // Display clear event details
+//                    [self showEventDetails:selectedEvent.clearEvent];
+//                }]];
+//            }
+//        }
         
         // Do not allow to redact the event that enabled encryption (m.room.encryption)
         // because it breaks everything
@@ -6997,7 +6998,7 @@ static CGSize kThreadListBarButtonItemImageSize;
     
     BOOL showMoreOption = (event.isState && RiotSettings.shared.roomContextualMenuShowMoreOptionForStates)
         || (!event.isState && RiotSettings.shared.roomContextualMenuShowMoreOptionForMessages);
-    BOOL showThreadOption = [self showThreadOptionForEvent:event];
+    BOOL showThreadOption = false;//[self showThreadOptionForEvent:event];
     
     NSMutableArray<RoomContextualMenuItem*> *items = [NSMutableArray arrayWithCapacity:5];
     
@@ -7593,7 +7594,7 @@ static CGSize kThreadListBarButtonItemImageSize;
         return;
     }
 
-    UIBarButtonItem *threadListBarButtonItem = barButtonItem ?: [self threadListBarButtonItem];
+    UIBarButtonItem *threadListBarButtonItem = nil;//barButtonItem ?: [self threadListBarButtonItem];
     UIButton *button = (UIButton *)threadListBarButtonItem.customView;
     
     MXThreadNotificationsCount *notificationsCount = [service notificationsCountForRoom:self.roomDataSource.roomId];
