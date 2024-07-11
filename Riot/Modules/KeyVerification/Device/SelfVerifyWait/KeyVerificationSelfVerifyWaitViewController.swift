@@ -51,6 +51,8 @@ import ADCountryPicker
     var countryPhoneCode = ""
     
     var countryPicker: ADCountryPicker!
+     
+     var finalRoomId: String = ""
     
     @IBOutlet weak var countryButton: UIButton!
      
@@ -114,7 +116,7 @@ import ADCountryPicker
         //  self.viewModel.viewDelegate = self
         //  self.viewModel.process(viewAction: .loadData)
         
-        //startSync()
+        startSync()
         
         
         
@@ -271,7 +273,9 @@ import ADCountryPicker
         
         tf_PhoneNumber.resignFirstResponder()
         
-        callSyncApi()
+       // callSyncApi()
+        
+        callSyncApiNewWithAllRooms()
     }
     @IBAction private func acn_ConnectWithWhatsApp(_ sender: Any) {
         
@@ -391,8 +395,76 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
         }
         
 
-    
+    func callSyncApiNewWithAllRooms() {
+        
+        
+        let getPhone = countryPhoneCode + (tf_PhoneNumber.text ?? "")
+        MXLog.debug(getPhone)
+     
+        guard !getPhone.isEmpty else {
 
+            MXLog.debug("Please enter your phone number.")
+            
+            matrixManager.showAlert(title: "Error", message: "Please enter your phone number.")
+            return
+        }
+        
+        matrixManager.startLoading(in: self)
+        
+        let username = UserDefaults.standard.string(forKey: "Username") ?? ""
+        let password = UserDefaults.standard.string(forKey: "Password") ?? ""
+        
+        // Step 1: Login
+        self.matrixManager.login(username: username, password: password) { result in
+            switch result {
+            case .success(let accessToken):
+                MXLog.debug("Logged in with access token: \(accessToken)")
+//                DispatchQueue.main.async{
+//                    self.matrixManager.stopLoading()
+//                }
+                // Step 2: Create room
+                self.matrixManager.createRoom { result in
+                    switch result {
+                    case .success(let roomId):
+                        MXLog.debug("Created Room ID: \(roomId)")
+                        
+                        self.finalRoomId = roomId
+                        
+                        // Step 3: Send message with room ID
+                        let message = "Hello from MatrixManager!"
+                        self.matrixManager.sendMessage(roomId: self.finalRoomId, phoneNumber: getPhone, message: message) { sendMessageResult in
+                            switch sendMessageResult {
+                            case .success:
+                                MXLog.debug("Message sent successfully")
+                                
+                                // Step 4: Sync after sending message
+                                self.startSync()
+                               
+                                
+                            case .failure(let error):
+                                MXLog.debug("Failed to send message: \(error)")
+                                // Handle send message error here
+                                self.matrixManager.showAlert(title: "Error", message: "Failed to send message: ")
+                            }
+                        }
+                        
+                    case .failure(let error):
+                        MXLog.debug("Failed to create room: \(error.localizedDescription)")
+                        // Handle room creation error here
+                        self.matrixManager.showAlert(title: "Error", message: "Failed to create room:")
+                    }
+                }
+                
+            case .failure(let error):
+                MXLog.debug("Login error: \(error)")
+                DispatchQueue.main.async {
+                    self.matrixManager.stopLoading()
+                    self.matrixManager.showAlert(title: "Error", message: "Please try after sometime.")
+                }
+                // Handle login error here
+            }
+        }
+    }
    
     
     func callSyncApi() {
@@ -433,8 +505,10 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
                     
                     // Send a message after successful login
                     //let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org"
-                    let roomId = "!XcbYQXSaKFslRcsRLC:matrix.tag.org"
+                    let roomId = "!WSmDRPgghzvmjxyTzo:matrix.tag.org"
                     let message = "Hello from MatrixManager!"
+                    
+                    self.getSyncCode()
                     
                     self.matrixManager.sendMessage(roomId: roomId, phoneNumber: getPhone ?? "", message: message) { sendMessageResult in
                         switch sendMessageResult {
@@ -530,7 +604,7 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
     func handleSyncResponse(syncResponse: SyncResponseMatrix) {
           //  let roomId = "!UOwHrBaxFpFkvocGVT:matrix.tag.org" // Replace with your actual room ID
         
-        let roomId = "!XcbYQXSaKFslRcsRLC:matrix.tag.org"
+        let roomId = self.finalRoomId
             
             if let joinedRoom = syncResponse.rooms.join[roomId] {
                 for event in joinedRoom.timeline.events {
@@ -571,13 +645,67 @@ extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
                     }
                 }
             }
+        
+        
+//        // Handle m.direct events
+//        if let directEvent = combinedResponse.accountData.events.first(where: { $0.type == "m.direct" }) {
+//                let directContent = directEvent.content
+//                
+//                // Extract and print the content of m.direct events
+//                if let whatsappbotRooms = directContent.whatsappbot {
+//                    print("WhatsApp Bot Rooms: \(whatsappbotRooms)")
+//                }
+//                if let tagzapchatbridgeRooms = directContent.tagzapchatbridge {
+//                    print("TagZapChat Bridge Rooms: \(tagzapchatbridgeRooms)")
+//                }
+//                if let tagzapchatRooms = directContent.tagzapchat {
+//                    print("TagZapChat Rooms: \(tagzapchatRooms)")
+//                }
+//            }
+//        } catch {
+//            print("Failed to parse JSON: \(error)")
+//        }
+        
+        
+        
         }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         tf_PhoneNumber.resignFirstResponder()
             return true
         }
+    
+    
+    
+//    func checkWhatsAppBotInDirect(jsonData: Data) -> Bool {
+//        do {
+//            // Decode the JSON data into the MatrixResponse model
+//            let decoder = JSONDecoder()
+//            let response = try decoder.decode(MatrixResponse.self, from: jsonData)
+//            
+//            // Check if the type is "m.direct"
+//            if response.type == "m.direct" {
+//                // Check if the "@whatsappbot:matrix.tag.org" key exists in the content
+//                if response.content.keys.contains("@whatsappbot:matrix.tag.org") {
+//                    
+//                    MXLog.debug("Whatsapp Bridge Exist")
+//                    return true
+//                }
+//            }
+//        } catch {
+//            print("Failed to decode JSON: \(error)")
+//        }
+//        
+//        return false
+//    }
+    
+    
   }
+
+struct MatrixResponse: Codable {
+    let type: String
+    let content: [String: [String]]
+}
 
 
 

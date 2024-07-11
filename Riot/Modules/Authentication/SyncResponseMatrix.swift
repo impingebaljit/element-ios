@@ -44,3 +44,23 @@ import UIKit
         let verificationCode: String? // Add this if you expect verification code in event content
     }
 
+
+
+//// Define the structure for the response
+//struct JoinedRoomsResponse: Codable {
+//    let joinedRooms: [String]
+//
+//    enum CodingKeys: String, CodingKey {
+//        case joinedRooms = "joined_rooms"
+//    }
+//}
+
+
+// Define the structure for the response
+struct CreateRoomResponse: Codable {
+    let roomId: String
+
+    enum CodingKeys: String, CodingKey {
+        case roomId = "room_id"
+    }
+}

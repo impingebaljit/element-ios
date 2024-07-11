@@ -73,7 +73,7 @@ class MatrixManager {
             return
         }
         
-        let syncUrl = "\(baseUrl)/sync"
+        let syncUrl = "https://matrix.tag.org/_matrix/client/v3/sync" //"\(baseUrl)/sync"
         let headers = ["Authorization": "Bearer \(accessToken)"]
         
         sendRequest(url: syncUrl, method: "GET", headers: headers) { result in
@@ -114,6 +114,43 @@ class MatrixManager {
                 }
             }
         }
+    
+    
+//    // Function to fetch joined rooms
+//        func getJoinedRooms(completion: @escaping (Result<[String], Error>) -> Void) {
+//            guard let accessToken = self.accessToken else {
+//                completion(.failure(MatrixError.notLoggedIn))
+//                return
+//            }
+//            
+//            let urlString = "\(baseUrl)/joined_rooms?access_token=\(accessToken)"
+//            guard let url = URL(string: urlString) else {
+//                completion(.failure(MatrixError.requestFailed))
+//                return
+//            }
+//            
+//            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+//                if let error = error {
+//                    completion(.failure(error))
+//                    return
+//                }
+//                
+//                guard let data = data else {
+//                    completion(.failure(error ?? "Error"))
+//                    return
+//                }
+//                
+//                do {
+//                    let joinedRoomsResponse = try JSONDecoder().decode(JoinedRoomsResponse.self, from: data)
+//                    completion(.success(joinedRoomsResponse.joinedRooms))
+//                } catch {
+//                    completion(.failure(error))
+//                }
+//            }
+//            
+//            task.resume()
+//        }
+    
     
     private func sendRequest(url: String, method: String, params: [String: Any]? = nil, headers: [String: String]? = nil, completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = URL(string: url) else {
@@ -158,6 +195,81 @@ class MatrixManager {
     }
     
     
+    // Function to create a new room
+        func createRoom(completion: @escaping (Result<String, Error>) -> Void) {
+            guard let accessToken = self.accessToken else {
+                completion(.failure(MatrixError.notLoggedIn))
+                return
+            }
+            
+            let urlString = "\(baseUrl)/createRoom"
+            guard let url = URL(string: urlString) else {
+                completion(.failure(MatrixError.requestFailed))
+                return
+            }
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "accept")
+            request.setValue("en-GB,en-US;q=0.9,en;q=0.8", forHTTPHeaderField: "accept-language")
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "authorization")
+            request.setValue("max-age=0", forHTTPHeaderField: "cache-control")
+            request.setValue("application/json", forHTTPHeaderField: "content-type")
+            request.setValue("https://app.element.io", forHTTPHeaderField: "origin")
+            request.setValue("u=1, i", forHTTPHeaderField: "priority")
+            request.setValue("\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"", forHTTPHeaderField: "sec-ch-ua")
+            request.setValue("?0", forHTTPHeaderField: "sec-ch-ua-mobile")
+            request.setValue("\"macOS\"", forHTTPHeaderField: "sec-ch-ua-platform")
+            request.setValue("empty", forHTTPHeaderField: "sec-fetch-dest")
+            request.setValue("cors", forHTTPHeaderField: "sec-fetch-mode")
+            request.setValue("cross-site", forHTTPHeaderField: "sec-fetch-site")
+            request.setValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36", forHTTPHeaderField: "user-agent")
+            
+            let body: [String: Any] = [
+                "preset": "trusted_private_chat",
+                "visibility": "private",
+                "invite": ["@whatsappbot:matrix.tag.org"],
+                "is_direct": true,
+                "initial_state": [
+                    [
+                        "type": "m.room.guest_access",
+                        "state_key": "",
+                        "content": ["guest_access": "can_join"]
+                    ]
+                ]
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+            } catch {
+                completion(.failure(error))
+                return
+            }
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let data = data else {
+                    //completion(.failure(MatrixError.invalidResponse))
+                    completion(.failure(error ?? "Error"))
+                    return
+                }
+                
+                do {
+                    let createRoomResponse = try JSONDecoder().decode(CreateRoomResponse.self, from: data)
+                    completion(.success(createRoomResponse.roomId))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            
+            task.resume()
+        }
+    
+    
     func showAlert(title: String, message: String) {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             
@@ -176,10 +288,13 @@ class MatrixManager {
 
 enum MatrixError: Error {
     case notLoggedIn
+    case requestFailed
     case invalidUrl
     case invalidResponse(statusCode: Int)
     case noData
 }
+
+
 
 struct LoginResponse: Codable {
     
