@@ -281,20 +281,20 @@ CEdldCBWZXJpZmljYXRpb24gQ29kZQ
                                                 <string key="content">Enter your phone number to get
 </string>
                                                 <attributes>
-                                                    <font key="NSFont" size="20" name=".SFNS-Regular"/>
+                                                    <font key="NSFont" metaFont="system" size="20"/>
                                                     <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                                 </attributes>
                                             </fragment>
                                             <fragment content="WhatsApp">
                                                 <attributes>
                                                     <color key="NSColor" red="0.0" green="0.74119001630000003" blue="0.57646870610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <font key="NSFont" size="20" name=".SFNS-Regular"/>
+                                                    <font key="NSFont" metaFont="system" size="20"/>
                                                     <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                                 </attributes>
                                             </fragment>
                                             <fragment content=" verification code">
                                                 <attributes>
-                                                    <font key="NSFont" size="20" name=".SFNS-Regular"/>
+                                                    <font key="NSFont" metaFont="system" size="20"/>
                                                     <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                                 </attributes>
                                             </fragment>
@@ -323,11 +323,11 @@ CEdldCBWZXJpZmljYXRpb24gQ29kZQ
                                         </connections>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7ep-3f-HYH">
-                                        <rect key="frame" x="24" y="110" width="60" height="60"/>
+                                        <rect key="frame" x="24" y="110" width="70" height="60"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="60" id="VLp-i9-2rx"/>
-                                            <constraint firstAttribute="width" constant="60" id="ajY-Gr-g6O"/>
+                                            <constraint firstAttribute="height" constant="60" id="5Ff-gk-dHc"/>
+                                            <constraint firstAttribute="width" constant="70" id="hOU-uw-LWq"/>
                                         </constraints>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <connections>
@@ -354,15 +354,17 @@ CEdldCBWZXJpZmljYXRpb24gQ29kZQ
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="Pam-YA-3ZG" secondAttribute="bottom" constant="147" id="1Fm-oi-Xx0"/>
+                                    <constraint firstItem="Dt8-iw-w9a" firstAttribute="leading" secondItem="7ep-3f-HYH" secondAttribute="trailing" constant="22" id="1tB-ir-IA3"/>
                                     <constraint firstItem="wQg-I3-uLu" firstAttribute="leading" secondItem="Y3a-Xy-0Ko" secondAttribute="leading" constant="30" id="3Gh-vV-Cie"/>
                                     <constraint firstAttribute="trailing" secondItem="v2C-Kc-tcv" secondAttribute="trailing" constant="30" id="8WB-PI-cKZ"/>
                                     <constraint firstItem="r9T-3U-pdk" firstAttribute="top" secondItem="v2C-Kc-tcv" secondAttribute="bottom" constant="21" id="9Ht-Pq-ooh"/>
-                                    <constraint firstItem="7ep-3f-HYH" firstAttribute="leading" secondItem="Y3a-Xy-0Ko" secondAttribute="leading" constant="24" id="Kob-m9-5gn"/>
+                                    <constraint firstItem="7ep-3f-HYH" firstAttribute="top" secondItem="rBe-jo-zUE" secondAttribute="bottom" constant="15" id="EaV-lc-NeP"/>
                                     <constraint firstItem="Pam-YA-3ZG" firstAttribute="top" secondItem="Y3a-Xy-0Ko" secondAttribute="top" id="NNa-nj-934"/>
                                     <constraint firstItem="Pam-YA-3ZG" firstAttribute="leading" secondItem="Y3a-Xy-0Ko" secondAttribute="leading" id="PJI-8L-jse"/>
                                     <constraint firstItem="Dt8-iw-w9a" firstAttribute="leading" secondItem="pbJ-Cg-OUe" secondAttribute="trailing" constant="22" id="Pvf-M4-NFH"/>
                                     <constraint firstItem="v2C-Kc-tcv" firstAttribute="top" secondItem="rBe-jo-zUE" secondAttribute="bottom" constant="24" id="SCt-gd-kDp"/>
                                     <constraint firstItem="rBe-jo-zUE" firstAttribute="leading" secondItem="Y3a-Xy-0Ko" secondAttribute="leading" constant="30" id="Sd3-zd-euY"/>
+                                    <constraint firstItem="7ep-3f-HYH" firstAttribute="leading" secondItem="Y3a-Xy-0Ko" secondAttribute="leading" constant="24" id="UhF-wf-dV5"/>
                                     <constraint firstItem="Pam-YA-3ZG" firstAttribute="width" secondItem="Y3a-Xy-0Ko" secondAttribute="width" id="VsY-WR-2z1"/>
                                     <constraint firstItem="pbJ-Cg-OUe" firstAttribute="top" secondItem="rBe-jo-zUE" secondAttribute="bottom" constant="24" id="XFI-s1-60c"/>
                                     <constraint firstItem="rBe-jo-zUE" firstAttribute="top" secondItem="Y3a-Xy-0Ko" secondAttribute="top" constant="40" id="Xur-FC-Tyn"/>
@@ -373,7 +375,6 @@ CEdldCBWZXJpZmljYXRpb24gQ29kZQ
                                     <constraint firstItem="wQg-I3-uLu" firstAttribute="top" secondItem="r9T-3U-pdk" secondAttribute="bottom" constant="29" id="iOa-6E-kNz"/>
                                     <constraint firstItem="Dt8-iw-w9a" firstAttribute="top" secondItem="rBe-jo-zUE" secondAttribute="bottom" constant="24" id="nj5-qb-dm0"/>
                                     <constraint firstAttribute="trailing" secondItem="rBe-jo-zUE" secondAttribute="trailing" constant="30" id="oUU-rU-HOb"/>
-                                    <constraint firstItem="7ep-3f-HYH" firstAttribute="top" secondItem="rBe-jo-zUE" secondAttribute="bottom" constant="15" id="tdX-Wh-NlM"/>
                                     <constraint firstAttribute="trailing" secondItem="Pam-YA-3ZG" secondAttribute="trailing" id="y7i-Ua-4cK"/>
                                 </constraints>
                             </scrollView>

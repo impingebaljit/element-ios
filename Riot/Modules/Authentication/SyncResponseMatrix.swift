@@ -47,14 +47,15 @@ import UIKit
 
 
 //// Define the structure for the response
-//struct JoinedRoomsResponse: Codable {
-//    let joinedRooms: [String]
-//
-//    enum CodingKeys: String, CodingKey {
-//        case joinedRooms = "joined_rooms"
-//    }
-//}
 
+
+struct JoinedRoomsResponse: Decodable {
+    let joinedRooms: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case joinedRooms = "joined_rooms"
+    }
+}
 
 // Define the structure for the response
 struct CreateRoomResponse: Codable {

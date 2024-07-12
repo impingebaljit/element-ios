@@ -115,41 +115,56 @@ class MatrixManager {
             }
         }
     
+    //Function to LEave Room
+    func leaveRoom(roomId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let accessToken = self.accessToken else {
+            completion(.failure(MatrixError.notLoggedIn))
+            return
+        }
+      
+        let leaveRoomUrl = "\(baseUrl)/rooms/\(roomId)/leave"
+        let headers = ["Authorization": "Bearer \(accessToken)"]
+        
+        sendRequest(url: leaveRoomUrl, method: "POST", headers: headers) { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
     
-//    // Function to fetch joined rooms
-//        func getJoinedRooms(completion: @escaping (Result<[String], Error>) -> Void) {
-//            guard let accessToken = self.accessToken else {
-//                completion(.failure(MatrixError.notLoggedIn))
-//                return
-//            }
-//            
-//            let urlString = "\(baseUrl)/joined_rooms?access_token=\(accessToken)"
-//            guard let url = URL(string: urlString) else {
-//                completion(.failure(MatrixError.requestFailed))
-//                return
-//            }
-//            
-//            let task = URLSession.shared.dataTask(with: url) { data, response, error in
-//                if let error = error {
-//                    completion(.failure(error))
-//                    return
-//                }
-//                
-//                guard let data = data else {
-//                    completion(.failure(error ?? "Error"))
-//                    return
-//                }
-//                
-//                do {
-//                    let joinedRoomsResponse = try JSONDecoder().decode(JoinedRoomsResponse.self, from: data)
-//                    completion(.success(joinedRoomsResponse.joinedRooms))
-//                } catch {
-//                    completion(.failure(error))
-//                }
-//            }
-//            
-//            task.resume()
-//        }
+    // Function to fetch joined rooms
+    func getJoinedRooms(completion: @escaping (Result<[String], Error>) -> Void) {
+        guard let accessToken = self.accessToken else {
+            completion(.failure(MatrixError.notLoggedIn))
+            return
+        }
+        
+        let urlString = "\(baseUrl)/joined_rooms"
+        let headers = ["Authorization": "Bearer \(accessToken)", "Content-Type": "application/json"]
+        guard let url = URL(string: urlString) else {
+            completion(.failure(MatrixError.requestFailed))
+            return
+        }
+        
+        sendRequest(url: urlString, method: "GET", headers: headers) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let jsonDecoder = JSONDecoder()
+                    let response = try jsonDecoder.decode(JoinedRoomsResponse.self, from: data)
+                    completion(.success(response.joinedRooms))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
     
     
     private func sendRequest(url: String, method: String, params: [String: Any]? = nil, headers: [String: String]? = nil, completion: @escaping (Result<Data, Error>) -> Void) {
