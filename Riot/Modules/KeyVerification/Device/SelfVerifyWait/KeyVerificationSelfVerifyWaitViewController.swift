@@ -49,6 +49,7 @@ import ADCountryPicker
   
     private var syncTimer: Timer?
     var countryPhoneCode = ""
+     var finalGetPhone = ""
     
     var countryPicker: ADCountryPicker!
      
@@ -59,7 +60,7 @@ import ADCountryPicker
     
     @IBOutlet weak var tf_CountryCode: UITextField!
     @IBOutlet weak var tf_PhoneNumber: UITextField!
-    @IBOutlet weak var lbl_ScanCode: UILabel!
+    @IBOutlet weak var lbl_ScanCode: CopyLabelClass!
     @IBOutlet weak var btnConnectWhatsApp: RoundedButton!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var informationLabel: UILabel!
@@ -104,22 +105,7 @@ import ADCountryPicker
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Do any additional setup after loading the view.
-        // self.setupViews()
-        //   self.activityPresenter = ActivityIndicatorPresenter()
-        // self.errorPresenter = MXKErrorAlertPresentation()
-        
-        //   self.registerThemeServiceDidChangeThemeNotification()
-        //self.update(theme: self.theme)
-        
-        //  self.viewModel.viewDelegate = self
-        //  self.viewModel.process(viewAction: .loadData)
-        
-        //startSync()
-        
-        
-        
+
         
     }
     
@@ -276,7 +262,28 @@ import ADCountryPicker
        // callSyncApi()
         
        // callSyncApiNewWithAllRooms()
-        callSyncApiWithNewLogicCreateandLeaveRoom()
+        
+        
+        guard !countryPhoneCode.isEmpty else {
+            MXLog.debug("Please enter your country code.")
+            matrixManager.showAlert(title: "Error", message: "Please enter your country code.")
+            return
+        }
+
+        let phoneNumber = tf_PhoneNumber.text ?? ""
+        guard !phoneNumber.isEmpty else {
+            MXLog.debug("Please enter your phone number.")
+            matrixManager.showAlert(title: "Error", message: "Please enter your phone number.")
+            return
+        }
+
+        finalGetPhone = countryPhoneCode + phoneNumber
+        MXLog.debug(finalGetPhone)
+
+        
+        
+        loginAndSetup()
+       // callSyncApiWithNewLogicCreateandLeaveRoom()
     }
     @IBAction private func acn_ConnectWithWhatsApp(_ sender: Any) {
         
@@ -347,10 +354,7 @@ extension KeyVerificationSelfVerifyWaitViewController {
          // Handle the case where the Nib file is not found
            MXLog.debug("Error: Could not load Nib file WhatsAppView")
        }
-
-
     }
-    
 }
 //
 //    private var navigationRouter: NavigationRouterType { parameters.navigationRouter }
@@ -389,279 +393,556 @@ extension KeyVerificationSelfVerifyWaitViewController {
 //}
 
 
+//extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
+//
+//        
+//
+//        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//            tf_PhoneNumber.resignFirstResponder()
+//                return true
+//            }
+//      
+//    func callSyncApiWithNewLogicCreateandLeaveRoom() {
+//       
+//        DispatchQueue.main.async {
+//            self.matrixManager.startLoading(in: self)
+//        }
+//        let username = UserDefaults.standard.string(forKey: "Username") ?? ""
+//        let password = UserDefaults.standard.string(forKey: "Password") ?? ""
+//
+//        // Step 1: Login
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//            self.matrixManager.login(username: username, password: password) { result in
+//                switch result {
+//                case .success(let accessToken):
+//                    MXLog.debug("Logged in with access token: \(accessToken)")
+//
+//                    // Step 2: Get all rooms
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//                        self.matrixManager.getJoinedRooms { roomsResult in
+//                            switch roomsResult {
+//                            case .success(let rooms):
+//                                self.processRooms(rooms: rooms, getPhone: self.finalGetPhone)
+//                            case .failure(let error):
+//                                MXLog.debug("Failed to get rooms: \(error)")
+//                                DispatchQueue.main.async {
+//                                    self.matrixManager.showAlert(title: "Error", message: "Failed to get rooms")
+//                                }
+//                            }
+//                        }
+//                    }
+//                case .failure(let error):
+//                    MXLog.debug("Login error: \(error)")
+//                    DispatchQueue.main.async {
+//                        self.matrixManager.stopLoading()
+//                        self.matrixManager.showAlert(title: "Error", message: "Too many requests have been sent.")
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    func processRooms(rooms: [String], getPhone: String) {
+//        var whatsappRoomId: String?
+//
+//        let group = DispatchGroup()
+//
+//        for roomId in rooms {
+//            self.finalRoomId = roomId
+//            group.enter()
+//            self.checkIfRoomContainsWhatsappbridgeUser(roomId: roomId) { containsWhatsappbridge in
+//                if containsWhatsappbridge {
+//                    whatsappRoomId = roomId
+//                    MXLog.debug("whatsappRoomId: \(whatsappRoomId ?? "not found")")
+//                }
+//                group.leave()
+//            }
+//        }
+//
+//        group.notify(queue: .main) {
+//            if let roomId = whatsappRoomId {
+//                self.handleRoomWithWhatsappbridgeUser(roomId: roomId, getPhone: getPhone)
+//            } else {
+//                // No room found with whatsappbridge user, create a new room
+//                MXLog.debug("No room found with whatsappbridge user, creating a new room.")
+//                self.createNewRoomAndSendLoginMessage(getPhone: getPhone)
+//            }
+//        }
+//    }
+//
+//    func checkIfRoomContainsWhatsappbridgeUser(roomId: String, completion: @escaping (Bool) -> Void) {
+//        MXLog.debug("checkIfRoomContainsWhatsappbridgeUser called for roomId: \(roomId)")
+//        self.matrixManager.getRoomState(roomId: roomId) { result in
+//            switch result {
+//            case .success(let members):
+//                let containsWhatsappbridge = members.contains { $0.userID == "@whatsappbot:matrix.tag.org" }
+//                completion(containsWhatsappbridge)
+//            case .failure(let error):
+//                MXLog.debug("Failed to get room members for room: \(roomId), error: \(error)")
+//                completion(false)
+//            }
+//        }
+//    }
+//
+//    func handleRoomWithWhatsappbridgeUser(roomId: String, getPhone: String) {
+//        // Send login message with a 5-second delay
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//            let message = "Hello from MatrixManager!"
+//            self.finalRoomId = roomId
+//            self.matrixManager.sendMessage(roomId: roomId, phoneNumber: getPhone, message: message) { sendMessageResult in
+//                switch sendMessageResult {
+//                case .success:
+//                    MXLog.debug("Message sent successfully to room: \(roomId)")
+//
+//                    // Step 4: Sync after sending message
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//                        self.scheduleSyncCalls { syncCompleted in
+//                            if !syncCompleted {
+//                                // Step 5: Leave the room if no scan code found
+//                                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//                                    self.leaveRoom(roomId: roomId) { leaveResult in
+//                                        switch leaveResult {
+//                                        case .success:
+//                                            MXLog.debug("Left room: \(roomId)")
+//
+//                                            // Step 6: Create a new room
+//                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//                                                self.createNewRoomAndSendLoginMessage(getPhone: getPhone)
+//                                            }
+//                                        case .failure(let error):
+//                                            MXLog.debug("Failed to leave room: \(roomId), error: \(error)")
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                case .failure(let error):
+//                    MXLog.debug("Failed to send message to room: \(error)")
+//                    DispatchQueue.main.async {
+//                        self.matrixManager.showAlert(title: "Error", message: "Failed to send message to room")
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    func createNewRoomAndSendLoginMessage(getPhone: String) {
+//        self.matrixManager.createRoom { result in
+//            switch result {
+//            case .success(let roomId):
+//                MXLog.debug("Created Room ID: \(roomId)")
+//                self.finalRoomId = roomId
+//
+//                // Send login message with new room ID with a 5-second delay
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//                    let message = "Hello from MatrixManager!"
+//                    self.matrixManager.sendMessage(roomId: self.finalRoomId, phoneNumber: getPhone, message: message) { sendMessageResult in
+//                        switch sendMessageResult {
+//                        case .success:
+//                            MXLog.debug("Message sent successfully")
+//
+//                            // Sync after sending message
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//                                self.scheduleSyncCalls { syncCompleted in
+//                                    if !syncCompleted {
+//                                        // Leave the room if no scan code found
+//                                        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//                                            self.leaveRoom(roomId: roomId) { leaveResult in
+//                                                switch leaveResult {
+//                                                case .success:
+//                                                    MXLog.debug("Left room: \(roomId)")
+//
+//                                                    // Create another new room and send login message
+//                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//                                                        self.createNewRoomAndSendLoginMessage(getPhone: getPhone)
+//                                                    }
+//                                                case .failure(let error):
+//                                                    MXLog.debug("Failed to leave room: \(roomId), error: \(error)")
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        case .failure(let error):
+//                            MXLog.debug("Failed to send message: \(error)")
+//                            DispatchQueue.main.async {
+//                                self.matrixManager.showAlert(title: "Error", message: "Failed to send message")
+//                            }
+//                        }
+//                    }
+//                }
+//            case .failure(let error):
+//                MXLog.debug("Failed to create room: \(error.localizedDescription)")
+//                DispatchQueue.main.async {
+//                    self.matrixManager.showAlert(title: "Error", message: "Failed to create room")
+//                }
+//            }
+//        }
+//    }
+//
+
+//    func leaveRoom(roomId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+//        self.matrixManager.leaveRoom(roomId: roomId) { result in
+//            completion(result)
+//        }
+//    }
+//
+
+//    
+//    func scheduleSyncCalls(completion: @escaping (Bool) -> Void) {
+//        var attempts = 0
+//        var syncCompleted = false
+//        
+//        func attemptSync() {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(attempts) * 5.0 + 5.0) {
+//                self.getSyncCode { result in
+//                    switch result {
+//                    case .success(let syncResponse):
+//                        if self.handleSyncResponse(syncResponse: syncResponse) {
+//                            syncCompleted = true
+//                            completion(true)
+//                        } else {
+//                            attempts += 1
+//                            if attempts < 4 {
+//                                attemptSync() // Retry sync if not completed and within attempts limit
+//                            } else {
+//                                completion(false) // If all attempts fail, complete with false
+//                            }
+//                        }
+//                    case .failure(let error):
+//                        MXLog.debug("Sync failed with error: \(error)")
+//                        attempts += 1
+//                        if attempts < 4 {
+//                            attemptSync() // Retry sync if failed and within attempts limit
+//                        } else {
+//                            completion(false) // If all attempts fail, complete with false
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        
+//        attemptSync() // Start the initial attempt
+//    }
+//
+//    func getSyncCode(completion: @escaping (Result<SyncResponseMatrix, Error>) -> Void) {
+//        matrixManager.sync { result in
+//            completion(result)
+//        }
+//    }
+//
+//    func handleSyncResponse(syncResponse: SyncResponseMatrix) -> Bool {
+//        let roomId = self.finalRoomId
+//        
+//        if let joinedRoom = syncResponse.rooms.join[roomId] {
+//            for event in joinedRoom.timeline.events {
+//                if event.type == "m.room.message", let body = event.content.body {
+//                    // Check if the body contains the scan code format you're interested in
+//                    if body.contains("**") {
+//                        let components = body.components(separatedBy: "**")
+//                        if components.count > 1 {
+//                            let scanCode = components[1]
+//                            DispatchQueue.main.async {
+//                                self.matrixManager.stopLoading()
+//                                self.lbl_ScanCode.text = scanCode
+//                                MXLog.debug("Scan Code: \(scanCode)")
+//                            }
+//                            return true
+//                        }
+//                    }
+//                    
+//                    // Check if the user has successfully logged into WhatsApp
+//                    if body.contains("Successfully logged in as") {
+//                        DispatchQueue.main.async {
+//                            self.syncTimer?.invalidate()
+//                            self.syncTimer = nil
+//                            MXLog.debug("User successfully logged into WhatsApp: \(body)")
+//                            
+//                            UserDefaults.standard.set(true, forKey: "UserLoggedIn")
+//                            
+//                            self.viewModel.process(viewAction: .cancel)
+//                        }
+//                        break
+//                    }
+//                }
+//            }
+//        }
+//        
+//        return false
+//    }
+
 extension KeyVerificationSelfVerifyWaitViewController: UITextFieldDelegate {
-
-        
-
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            tf_PhoneNumber.resignFirstResponder()
-                return true
-            }
-      
+func loginAndSetup() {
+       DispatchQueue.main.async {
+           self.matrixManager.startLoading(in: self)
+       }
        
-        func callSyncApiWithNewLogicCreateandLeaveRoom() {
-            let getPhone = countryPhoneCode + (tf_PhoneNumber.text ?? "")
-            MXLog.debug(getPhone)
-            
-            guard !getPhone.isEmpty else {
-                MXLog.debug("Please enter your phone number.")
-                matrixManager.showAlert(title: "Error", message: "Please enter your phone number.")
-                return
+       let username = UserDefaults.standard.string(forKey: "Username") ?? ""
+       let password = UserDefaults.standard.string(forKey: "Password") ?? ""
+       
+       DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+           self.login(username: username, password: password)
+       }
+   }
+
+
+    private func login(username: String, password: String) {
+            matrixManager.login(username: username, password: password) { [weak self] result in
+                switch result {
+                case .success(let accessToken):
+                    MXLog.debug("Logged in with access token: \(accessToken)")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                        self?.getJoinedRooms()
+                    }
+                case .failure(let error):
+                    MXLog.debug("Login error: \(error)")
+                    DispatchQueue.main.async {
+                        self?.matrixManager.stopLoading()
+                        self?.matrixManager.showAlert(title: "Error", message: "Too many requests have been sent.")
+                    }
+                }
             }
-            
-            matrixManager.startLoading(in: self)
-            
-            let username = UserDefaults.standard.string(forKey: "Username") ?? ""
-            let password = UserDefaults.standard.string(forKey: "Password") ?? ""
-            
-            // Step 1: Login with a 5-second delay
+        }
+    
+    private func getJoinedRooms() {
+            matrixManager.getJoinedRooms { [weak self] roomsResult in
+                switch roomsResult {
+                case .success(let rooms):
+                    self?.processRooms(rooms: rooms)
+                case .failure(let error):
+                    MXLog.debug("Failed to get rooms: \(error)")
+                    DispatchQueue.main.async {
+                        self?.matrixManager.showAlert(title: "Error", message: "Failed to get joined rooms")
+                    }
+                }
+            }
+        }
+
+    private func processRooms(rooms: [String]) {
+        let group = DispatchGroup()
+        var foundWhatsAppBridgeRoomId: String?
+
+        for roomId in rooms {
+            group.enter()
+            checkIfRoomContainsWhatsappbridgeUser(roomId: roomId) { [weak self] containsWhatsappbridge in
+                guard let self = self else { return }
+                self.finalRoomId = roomId
+                if containsWhatsappbridge {
+                    self.leaveRoom(roomId: self.finalRoomId) { _
+                        in }
+                }
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+//            if let roomId = foundWhatsAppBridgeRoomId {
+//                self.sendLoginMessage(in: self.finalRoomId)
+//            } else {
+//                MXLog.debug("No room found with WhatsApp bridge user, creating a new room.")
+                self.createNewRoomAndSendLoginMessage()
+            //}
+        }
+    }
+   
+    private func checkIfRoomContainsWhatsappbridgeUser(roomId: String, completion: @escaping (Bool) -> Void) {
+        MXLog.debug("Checking if room contains WhatsApp bridge user for roomId: \(roomId)")
+        
+        matrixManager.getRoomState(roomId: roomId) { result in
+            switch result {
+            case .success(let roomStates):
+                // Check if any room state matches the criteria for WhatsApp bridge user
+                let containsWhatsappbridge = roomStates.contains { state -> Bool in
+                    return state.type == "m.room.member" &&
+                           state.sender == "@whatsappbot:matrix.tag.org"
+                }
+                completion(containsWhatsappbridge)
+                
+                MXLog.debug("WhatsApp room exist")
+                
+            case .failure(let error):
+                MXLog.debug("Failed to get room state for room for whatsapp name: \(roomId), error: \(error)")
+                completion(false)
+            }
+        }
+    }
+
+    private func handleRoomWithWhatsappbridgeUser(roomId: String) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                self.matrixManager.login(username: username, password: password) { result in
+                self.sendLoginMessage(in: roomId)
+            }
+        }
+    
+    private func sendLoginMessage(in roomId: String) {
+        self.matrixManager.sendMessage(roomId: roomId, phoneNumber: finalGetPhone, message: "hi") { result in
+            switch result {
+            case .success:
+                self.scheduleSyncCalls { syncCompleted in
+                    if syncCompleted {
+                        MXLog.debug("Successfully synced and obtained scan code.")
+                    } else {
+                        MXLog.debug("Failed to sync and obtain scan code, leaving the room and creating a new one.")
+                        self.leaveRoomAndCreateNewOne()
+                    }
+                }
+            case .failure(let error):
+                MXLog.debug("Failed to send login message in room: \(roomId), error: \(error)")
+            }
+        }
+    }
+    
+    private func leaveRoomAndCreateNewOne() {
+       let roomId = finalRoomId 
+
+        self.leaveRoom(roomId: roomId) { [weak self] leaveResult in
+            switch leaveResult {
+            case .success:
+                MXLog.debug("Left room: \(roomId)")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                    self?.createNewRoomAndSendLoginMessage()
+                }
+            case .failure(let error):
+                MXLog.debug("Failed to leave room: \(roomId), error: \(error)")
+            }
+        }
+    }
+
+   
+    private func createNewRoomAndSendLoginMessage() {
+        matrixManager.createRoom { [weak self] result in
+            switch result {
+            case .success(let roomId):
+                MXLog.debug("Created Room ID: \(roomId)")
+                self?.finalRoomId = roomId
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                    self?.sendLoginMessage(in: self?.finalRoomId ?? "")
+                }
+            case .failure(let error):
+                MXLog.debug("Failed to create new room: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self?.matrixManager.showAlert(title: "Error", message: "Failed to create new room")
+                }
+            }
+        }
+    }
+
+
+    private func scheduleSyncCalls(completion: @escaping (Bool) -> Void) {
+        var attempts = 0
+        let maxAttempts = 4
+        let roomID = self.finalRoomId
+        
+        var syncCompleted = false
+
+        func attemptSync() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(attempts) * 5.0 + 5.0) {
+                self.getSyncCode { result in
                     switch result {
-                    case .success(let accessToken):
-                        MXLog.debug("Logged in with access token: \(accessToken)")
-                        
-                       
-                        
-                        // Step 2: Get all rooms with a 5-second delay
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                            self.matrixManager.getJoinedRooms { roomsResult in
-                                switch roomsResult {
-                                case .success(let rooms):
-                                    
-                                    for roomId in rooms {
-                                        // Step 3: Send login message to each room with a 5-second delay
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                                            let message = "Hello from MatrixManager!"
-                                            self.finalRoomId = roomId
-                                            self.matrixManager.sendMessage(roomId: roomId, phoneNumber: getPhone, message: message) { sendMessageResult in
-                                                switch sendMessageResult {
-                                                case .success:
-                                                    MXLog.debug("Message sent successfully to room: \(roomId)")
-                                                    
-                                                    // Step 4: Sync after sending message with a 5-second delay
-                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                                                        self.scheduleSyncCalls { syncCompleted in
-                                                            if !syncCompleted {
-                                                                // Step 5: Leave the room if no scan code found with a 5-second delay
-                                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                                                                    self.leaveRoom(roomId: roomId) { leaveResult in
-                                                                        switch leaveResult {
-                                                                        case .success:
-                                                                            MXLog.debug("Left room: \(roomId)")
-                                                                            
-                                                                            // Step 6: Create a new room with a 5-second delay
-                                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                                                                                self.createNewRoomAndSendLoginMessage(getPhone: getPhone)
-                                                                            }
-                                                                        case .failure(let error):
-                                                                            MXLog.debug("Failed to leave room: \(roomId), error: \(error)")
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                case .failure(let error):
-                                                    MXLog.debug("Failed to send message: \(error)")
-                                                    DispatchQueue.main.async{
-                                                        self.matrixManager.showAlert(title: "Error", message: "Failed to send message")
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                case .failure(let error):
-                                    MXLog.debug("Failed to get rooms: \(error)")
-                                    DispatchQueue.main.async{
-                                        self.matrixManager.showAlert(title: "Error", message: "Failed to get rooms")
+                    case .success(let syncResponse):
+                        if self.handleSyncResponse(syncResponse: syncResponse) {
+                            syncCompleted = true
+                            completion(true)
+                        } else {
+                            attempts += 1
+                            if attempts < maxAttempts {
+                                attemptSync()
+                            } else {
+                                self.leaveRoom(roomId: roomID) { result in
+                                    switch result {
+                                    case .success:
+                                        self.createNewRoomAndSendLoginMessage()
+                                    case .failure(let error):
+                                        MXLog.debug("Failed to leave room with error: \(error)")
+                                        completion(false)
                                     }
                                 }
                             }
                         }
                     case .failure(let error):
-                        MXLog.debug("Login error: \(error)")
-                        DispatchQueue.main.async {
-                            self.matrixManager.stopLoading()
-                            self.matrixManager.showAlert(title: "Error", message: "Too many requests have been sent.")
+                        MXLog.debug("Sync failed with error: \(error)")
+                        attempts += 1
+                        if attempts < maxAttempts {
+                            attemptSync()
+                        } else {
+                            self.leaveRoom(roomId: roomID) { result in
+                                switch result {
+                                case .success:
+                                    self.createNewRoomAndSendLoginMessage()
+                                case .failure(let error):
+                                    MXLog.debug("Failed to leave room with error: \(error)")
+                                    completion(false)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        func scheduleSyncCalls(completion: @escaping (Bool) -> Void) {
-            var attempts = 0
-            var syncCompleted = false
-            
-            func attemptSync() {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(attempts) * 5.0 + 5.0) {
-                    self.getSyncCode { result in
-                        switch result {
-                        case .success(let syncResponse):
-                            if self.handleSyncResponse(syncResponse: syncResponse) {
-                                syncCompleted = true
-                                completion(true)
-                            } else {
-                                attempts += 1
-                                if attempts < 4 {
-                                    attemptSync() // Retry sync if not completed and within attempts limit
-                                } else {
-                                    completion(false) // If all attempts fail, complete with false
-                                }
-                            }
-                        case .failure(let error):
-                            MXLog.debug("Sync failed with error: \(error)")
-                            attempts += 1
-                            if attempts < 4 {
-                                attemptSync() // Retry sync if failed and within attempts limit
-                            } else {
-                                completion(false) // If all attempts fail, complete with false
-                            }
-                        }
-                    }
-                }
-            }
-            
-            attemptSync() // Start the initial attempt
-        }
+        attemptSync()
+    }
 
-     
-        func getSyncCode(completion: @escaping (Result<SyncResponseMatrix, Error>) -> Void) {
-            matrixManager.sync { result in
-                completion(result)
-            }
+    func getSyncCode(completion: @escaping (Result<SyncResponseMatrix, Error>) -> Void) {
+        matrixManager.sync { result in
+            completion(result)
         }
+    }
 
-        func handleSyncResponse(syncResponse: SyncResponseMatrix) -> Bool {
-            let roomId = self.finalRoomId
-            
-       
-            
-            if let joinedRoom = syncResponse.rooms.join[roomId] {
-                for event in joinedRoom.timeline.events {
-                    if event.type == "m.room.message", let body = event.content.body {
-                        // Check if the body contains the scan code format you're interested in
-                        if body.contains("**") {
-                            let components = body.components(separatedBy: "**")
-                            if components.count > 1 {
-                                let scanCode = components[1]
-                                DispatchQueue.main.async {
-                                    self.matrixManager.stopLoading()
-                                    self.lbl_ScanCode.text = scanCode
-                                    MXLog.debug("Scan Code: \(scanCode)")
-                                    // Perform any additional actions needed upon successful scan code extraction
-                                }
-                                return true
-                            }
-                        }
-                        
-                        // Check if the user has successfully logged into WhatsApp
-                        if body.contains("Successfully logged in as") {
+    func handleSyncResponse(syncResponse: SyncResponseMatrix) -> Bool {
+        
+        let roomId = self.finalRoomId
+        if let joinedRoom = syncResponse.rooms.join[roomId] {
+            for event in joinedRoom.timeline.events {
+                if event.type == "m.room.message", let body = event.content.body {
+                    if body.contains("**") {
+                        let components = body.components(separatedBy: "**")
+                        if components.count > 1 {
+                            let scanCode = components[1]
                             DispatchQueue.main.async {
-                                self.syncTimer?.invalidate()
-                                self.syncTimer = nil
-                                MXLog.debug("User successfully logged into WhatsApp: \(body)")
+                                self.matrixManager.stopLoading()
+                                self.lbl_ScanCode.text = scanCode
+                                MXLog.debug("Scan Code: \(scanCode)")
                                 
-                                UserDefaults.standard.set(true, forKey: "UserLoggedIn")
+                                UIPasteboard.general.string = scanCode
                                 
-                                self.viewModel.process(viewAction: .cancel)
-                                // Perform any additional actions needed upon successful login
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+                                    self.viewModel.process(viewAction: .cancel)
+                                }
                             }
-                            break
+                            return true
                         }
                     }
-                }
-            }
-            
-            return false
-        }
-
-        func createNewRoomAndSendLoginMessage(getPhone: String) {
-            self.matrixManager.createRoom { result in
-                switch result {
-                case .success(let roomId):
-                    MXLog.debug("Created Room ID: \(roomId)")
-                    self.finalRoomId = roomId
                     
-                    // Send login message with new room ID with a 5-second delay
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                        let message = "Hello from MatrixManager!"
-                        self.matrixManager.sendMessage(roomId: self.finalRoomId, phoneNumber: getPhone, message: message) { sendMessageResult in
-                            switch sendMessageResult {
-                            case .success:
-                                MXLog.debug("Message sent successfully")
-                                
-                                // Sync after sending message with a 5-second delay
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                                    self.scheduleSyncCalls { syncCompleted in
-                                        if !syncCompleted {
-                                            // Leave the room if no scan code found with a 5-second delay
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                                                self.leaveRoom(roomId: roomId) { leaveResult in
-                                                    switch leaveResult {
-                                                    case .success:
-                                                        MXLog.debug("Left room: \(roomId)")
-                                                        
-                                                        // Create another new room and send login message
-                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                                                            self.createNewRoomAndSendLoginMessage(getPhone: getPhone)
-                                                        }
-                                                    case .failure(let error):
-                                                        MXLog.debug("Failed to leave room: \(roomId), error: \(error)")
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            case .failure(let error):
-                                MXLog.debug("Failed to send message: \(error)")
-                                DispatchQueue.main.async{
-                                    self.matrixManager.showAlert(title: "Error", message: "Failed to send message")
-                                }
-                            }
+                    if body.contains("You're already logged in") {
+                        DispatchQueue.main.async {
+                            self.viewModel.process(viewAction: .cancel)
                         }
                     }
-                case .failure(let error):
-                    MXLog.debug("Failed to create room: \(error.localizedDescription)")
-                    DispatchQueue.main.async{
-                        self.matrixManager.showAlert(title: "Error", message: "Failed to create room")
+
+                    if body.contains("Successfully logged in as") {
+                        DispatchQueue.main.async {
+                            MXLog.debug("User successfully logged into WhatsApp: \(body)")
+                            UserDefaults.standard.set(true, forKey: "UserLoggedIn")
+                            self.viewModel.process(viewAction: .cancel)
+                        }
+                        return true
                     }
                 }
             }
         }
-
-        func leaveRoom(roomId: String, completion: @escaping (Result<Void, Error>) -> Void) {
-            self.matrixManager.leaveRoom(roomId: roomId) { result in
+        return false
+    }
+ 
+    
+    private func leaveRoom(roomId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+            matrixManager.leaveRoom(roomId: roomId) { result in
                 completion(result)
             }
         }
-     
+
 }
-
-
-
-
- 
-
-   
-
-
-
-
-
-struct MatrixResponse: Codable {
-    let type: String
-    let content: [String: [String]]
-}
-
-
-
-    
-    
-    
-    
 
 
 

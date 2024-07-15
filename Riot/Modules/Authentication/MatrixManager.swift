@@ -92,6 +92,32 @@ class MatrixManager {
         }
     }
     
+    func getRoomState(roomId: String, completion: @escaping (Result<RoomNameModel, Error>) -> Void) {
+        guard let accessToken = self.accessToken else {
+            completion(.failure(MatrixError.notLoggedIn))
+            return
+        }
+       
+        let stateUrl = "\(baseUrl)/rooms/\(roomId)/state"
+        let headers = ["Authorization": "Bearer \(accessToken)"]
+        
+        sendRequest(url: stateUrl, method: "GET", headers: headers) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let jsonDecoder = JSONDecoder()
+                    let stateEvents = try jsonDecoder.decode(RoomNameModel.self, from: data)
+                    completion(.success(stateEvents))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    
     func sendMessage(roomId: String,phoneNumber: String, message: String, completion: @escaping (Result<Void, Error>) -> Void) {
             guard let accessToken = self.accessToken else {
                 completion(.failure(MatrixError.notLoggedIn))
@@ -343,4 +369,8 @@ extension UIApplication {
         }
         return controller
     }
+}
+struct MatrixResponse: Codable {
+    let type: String
+    let content: [String: [String]]
 }
