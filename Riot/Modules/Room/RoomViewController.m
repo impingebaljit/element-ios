@@ -2019,7 +2019,8 @@ static CGSize kThreadListBarButtonItemImageSize;
         // Set user picture in input toolbar
         if (userPictureView)
         {
-            [self.roomDataSource.room.summary setRoomAvatarImageIn:userPictureView];
+            userPictureView.hidden = YES;
+           [self.roomDataSource.room.summary setRoomAvatarImageIn:userPictureView];
         }
         
         [self refreshMissedDiscussionsCount:YES];
@@ -2057,10 +2058,10 @@ static CGSize kThreadListBarButtonItemImageSize;
         // Set user picture in input toolbar
         if (userPictureView)
         {
-            [userPictureView vc_setRoomAvatarImageWith:self.directChatTargetUser.avatarUrl
-                                                roomId:self.directChatTargetUser.userId
-                                           displayName:self.directChatTargetUser.displayname ?: self.directChatTargetUser.userId
-                                          mediaManager:self.mainSession.mediaManager];
+//            [userPictureView vc_setRoomAvatarImageWith:self.directChatTargetUser.avatarUrl
+//                                                roomId:self.directChatTargetUser.userId
+//                                           displayName:self.directChatTargetUser.displayname ?: self.directChatTargetUser.userId
+//                                          mediaManager:self.mainSession.mediaManager];
         }
     }
     
@@ -2122,7 +2123,7 @@ static CGSize kThreadListBarButtonItemImageSize;
         
         // Suppose the avatar is stored unencrypted on the Matrix media repository.
         userPictureView.enableInMemoryCache = YES;
-        [userPictureView setImageURI:self.mainSession.myUser.avatarUrl
+        [userPictureView setImageURI:nil//self.mainSession.myUser.avatarUrl
                             withType:nil
                  andImageOrientation:UIImageOrientationUp
                        toFitViewSize:userPictureView.frame.size
@@ -2224,7 +2225,7 @@ static CGSize kThreadListBarButtonItemImageSize;
     }
     
     RoomTitleView *roomTitleView = (RoomTitleView*)self.titleView;
-    roomTitleView.badgeImageView.image = self.roomEncryptionBadgeImage;
+   // roomTitleView.badgeImageView.image = self.roomEncryptionBadgeImage;
 }
 
 - (void)updateEncryptionDecorationForRoomInputToolbar:(id<RoomInputToolbarViewProtocol>)roomInputToolbarView

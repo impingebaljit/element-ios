@@ -625,7 +625,7 @@
     
     self.memberThumbnail.mediaFolder = kMXMediaManagerAvatarThumbnailFolder;
     self.memberThumbnail.enableInMemoryCache = YES;
-    [self.memberThumbnail setImageURI:_mxRoomMember.avatarUrl
+    [self.memberThumbnail setImageURI:nil//_mxRoomMember.avatarUrl
                              withType:nil
                   andImageOrientation:UIImageOrientationUp
                         toFitViewSize:self.memberThumbnail.frame.size

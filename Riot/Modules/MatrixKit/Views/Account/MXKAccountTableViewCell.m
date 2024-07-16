@@ -41,7 +41,7 @@
     {
         _accountPicture.mediaFolder = kMXMediaManagerAvatarThumbnailFolder;
         _accountPicture.enableInMemoryCache = YES;
-        [_accountPicture setImageURI:mxAccount.userAvatarUrl
+        [_accountPicture setImageURI:nil//mxAccount.userAvatarUrl
                             withType:nil
                  andImageOrientation:UIImageOrientationUp
                        toFitViewSize:_accountPicture.frame.size

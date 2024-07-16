@@ -212,7 +212,7 @@
     {
         NSString *avatarUrl = self.roomMembers[indexPath.row].avatarUrl;
         CGFloat side = CGRectGetWidth(cell.avatarImageView.frame);
-        [cell.avatarImageView setImageURI:avatarUrl
+        [cell.avatarImageView setImageURI:nil//avatarUrl
                                  withType:nil
                       andImageOrientation:UIImageOrientationUp
                             toFitViewSize:CGSizeMake(side, side)

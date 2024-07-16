@@ -37,20 +37,20 @@
     [super layoutSubviews];
     
     // Round image view
-    [self.avatarImageView.layer setCornerRadius:self.avatarImageView.frame.size.width / 2];
-    self.avatarImageView.clipsToBounds = YES;
+   // [self.avatarImageView.layer setCornerRadius:self.avatarImageView.frame.size.width / 2];
+   // self.avatarImageView.clipsToBounds = YES;
 }
 
 - (void)render:(NSString *)roomIdOrAlias
 {
     if (roomIdOrAlias)
     {
-        self.avatarImageView.image = [AvatarGenerator generateAvatarForText:roomIdOrAlias];
+        self.avatarImageView.image = nil;//[AvatarGenerator generateAvatarForText:roomIdOrAlias];
     }
     else
     {
-        self.avatarImageView.image = [MXKTools paintImage:AssetImages.placeholder.image
-                                                withColor:ThemeService.shared.theme.tintColor];
+        self.avatarImageView.image = nil;//[MXKTools paintImage:AssetImages.placeholder.image
+                                              //  withColor:ThemeService.shared.theme.tintColor];
     }
     
     self.titleLabel.text = roomIdOrAlias;

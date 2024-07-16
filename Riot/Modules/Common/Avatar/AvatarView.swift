@@ -84,6 +84,7 @@ class AvatarView: UIView, Themable {
     
     func fill(with viewData: AvatarViewDataProtocol) {
         self.updateAvatarImageView(with: viewData)
+       
         self.setNeedsLayout()
     }
         
@@ -114,22 +115,22 @@ class AvatarView: UIView, Themable {
             MXLog.warning("[AvatarView] defaultAvatarImage is nil")
         }
 
-        if let avatarUrl = viewData.avatarUrl {
-            avatarImageView.setImageURI(avatarUrl,
-                                        withType: nil,
-                                        andImageOrientation: .up,
-                                        toFitViewSize: avatarImageView.frame.size,
-                                        with: MXThumbnailingMethodScale,
-                                        previewImage: defaultAvatarImage,
-                                        mediaManager: viewData.mediaManager)
-            updateAvatarContentMode(contentMode: .scaleAspectFill)
-            
-            if avatarImageView.frame.size.width < 8 || avatarImageView.frame.size.height < 8 {
-                MXLog.warning("[AvatarView] small avatarImageView frame: \(avatarImageView.frame)")
-            }
-        } else {
-            updateAvatarImageView(image: defaultAvatarImage, contentMode: defaultAvatarImageContentMode)
-        }
+//        if let avatarUrl = viewData.avatarUrl {
+//            avatarImageView.setImageURI(avatarUrl,
+//                                        withType: nil,
+//                                        andImageOrientation: .up,
+//                                        toFitViewSize: avatarImageView.frame.size,
+//                                        with: MXThumbnailingMethodScale,
+//                                        previewImage: defaultAvatarImage,
+//                                        mediaManager: viewData.mediaManager)
+//            updateAvatarContentMode(contentMode: .scaleAspectFill)
+//            
+//            if avatarImageView.frame.size.width < 8 || avatarImageView.frame.size.height < 8 {
+//                MXLog.warning("[AvatarView] small avatarImageView frame: \(avatarImageView.frame)")
+//            }
+//        } else {
+//            updateAvatarImageView(image: defaultAvatarImage, contentMode: defaultAvatarImageContentMode)
+//        }
     }
     
     func updateView() {

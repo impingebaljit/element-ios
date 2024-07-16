@@ -301,7 +301,7 @@ CEdldCBWZXJpZmljYXRpb24gQ29kZQ
                                         </attributedString>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wQg-I3-uLu">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wQg-I3-uLu" customClass="CopyLabelClass" customModule="ZapChat" customModuleProvider="target">
                                         <rect key="frame" x="30" y="279" width="315" height="55"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="55" id="cnV-5L-v3e"/>

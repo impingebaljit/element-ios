@@ -94,7 +94,7 @@
             avatarUrl = nextBubbleData.senderAvatarUrl;
         }
 
-        [avatarView setImageURI:avatarUrl
+        [avatarView setImageURI:nil//avatarUrl
                        withType:nil
             andImageOrientation:UIImageOrientationUp
                   toFitViewSize:avatarView.frame.size

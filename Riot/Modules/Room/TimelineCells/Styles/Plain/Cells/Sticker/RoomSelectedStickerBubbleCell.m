@@ -91,7 +91,7 @@
             self.pictureView.hidden = NO;
             
             self.pictureView.enableInMemoryCache = YES;
-            [self.pictureView setImageURI:bubbleData.senderAvatarUrl
+            [self.pictureView setImageURI:nil//bubbleData.senderAvatarUrl
                                  withType:nil
                       andImageOrientation:UIImageOrientationUp
                             toFitViewSize:self.pictureView.frame.size

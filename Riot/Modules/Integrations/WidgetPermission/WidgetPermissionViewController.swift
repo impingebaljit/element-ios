@@ -149,7 +149,8 @@ final class WidgetPermissionViewController: UIViewController {
         
         if let avatarImageView = self.creatorAvatarImageView {
             let defaultavatarImage = AvatarGenerator.generateAvatar(forMatrixItem: self.viewModel.creatorUserId, withDisplayName: self.viewModel.creatorDisplayName)
-            avatarImageView.setImageURI(self.viewModel.creatorAvatarUrl, withType: nil, andImageOrientation: .up, previewImage: defaultavatarImage, mediaManager: self.viewModel.mediaManager)
+           // avatarImageView.setImageURI(self.viewModel.creatorAvatarUrl, withType: nil, andImageOrientation: .up, previewImage: defaultavatarImage, mediaManager: self.viewModel.mediaManager)
+            avatarImageView.setImageURI(nil, withType: nil, andImageOrientation: .up, previewImage: defaultavatarImage, mediaManager: self.viewModel.mediaManager)
         }
         
         if let creatorDisplayNameLabel = self.creatorDisplayNameLabel {

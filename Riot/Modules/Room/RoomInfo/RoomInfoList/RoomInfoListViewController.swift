@@ -337,7 +337,7 @@ extension RoomInfoListViewController: UITableViewDataSource {
             }
             if let icon = row.icon {
                 if row.type == .default {
-                    cell.imageView?.image = MXKTools.resize(icon, to: CGSize(width: 20, height: 20))?.vc_tintedImage(usingColor: theme.textSecondaryColor)
+                   cell.imageView?.image = MXKTools.resize(icon, to: CGSize(width: 20, height: 20))?.vc_tintedImage(usingColor: theme.textSecondaryColor)
                 } else if row.type == .destructive {
                     cell.imageView?.image = MXKTools.resize(icon, to: CGSize(width: 20, height: 20))?.vc_tintedImage(usingColor: theme.noticeColor)
                 }
@@ -346,7 +346,7 @@ extension RoomInfoListViewController: UITableViewDataSource {
             cell.detailTextLabel?.font = .systemFont(ofSize: 16)
             cell.textLabel?.text = row.text
             if row.accessoryType == .checkmark {
-                cell.accessoryView = UIImageView(image: Asset.Images.checkmark.image)
+              cell.accessoryView = UIImageView(image: Asset.Images.checkmark.image)
             } else {
                 cell.accessoryView = nil
                 cell.accessoryType = row.accessoryType

@@ -79,19 +79,21 @@ final class RoomCreationEventsModalViewModel: RoomCreationEventsModalViewModelTy
     func setAvatar(in avatarImageView: MXKImageView) {
         let avatarImage = AvatarGenerator.generateAvatar(forMatrixItem: roomState.roomId, withDisplayName: roomName)
         
-        if let avatarUrl = roomState.avatar ?? session.roomSummary(withRoomId: roomState.roomId)?.avatar {
-            avatarImageView.enableInMemoryCache = true
-
-            avatarImageView.setImageURI(avatarUrl,
-                                        withType: nil,
-                                        andImageOrientation: .up,
-                                        toFitViewSize: avatarImageView.frame.size,
-                                        with: MXThumbnailingMethodCrop,
-                                        previewImage: avatarImage,
-                                        mediaManager: session.mediaManager)
-        } else {
-            avatarImageView.image = avatarImage
-        }
+//        if let avatarUrl = roomState.avatar ?? session.roomSummary(withRoomId: roomState.roomId)?.avatar {
+//            avatarImageView.enableInMemoryCache = true
+//
+//            avatarImageView.setImageURI(avatarUrl,
+//                                        withType: nil,
+//                                        andImageOrientation: .up,
+//                                        toFitViewSize: avatarImageView.frame.size,
+//                                        with: MXThumbnailingMethodCrop,
+//                                        previewImage: avatarImage,
+//                                        mediaManager: session.mediaManager)
+//        } else {
+//            avatarImageView.image = avatarImage
+//        }
+        
+        avatarImageView.image = avatarImage
     }
     
     func setEncryptionIcon(in imageView: UIImageView) {

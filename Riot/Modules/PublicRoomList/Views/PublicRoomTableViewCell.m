@@ -63,7 +63,7 @@
     {
         _roomAvatar.enableInMemoryCache = YES;
 
-        [_roomAvatar setImageURI:publicRoom.avatarUrl
+        [_roomAvatar setImageURI:nil//publicRoom.avatarUrl
                         withType:nil
              andImageOrientation:UIImageOrientationUp
                    toFitViewSize:_roomAvatar.frame.size

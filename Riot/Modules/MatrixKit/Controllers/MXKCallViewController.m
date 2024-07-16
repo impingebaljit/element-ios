@@ -474,7 +474,7 @@ static const CGFloat kLocalPreviewMargin = 20;
         // Suppose avatar url is a matrix content uri, we use SDK to get the well adapted thumbnail from server
         onHoldCallerImageView.mediaFolder = kMXMediaManagerAvatarThumbnailFolder;
         onHoldCallerImageView.enableInMemoryCache = YES;
-        [onHoldCallerImageView setImageURI:peerAvatarURL
+        [onHoldCallerImageView setImageURI:nil//peerAvatarURL
                                   withType:nil
                        andImageOrientation:UIImageOrientationUp
                              toFitViewSize:onHoldCallerImageView.frame.size
@@ -528,7 +528,7 @@ static const CGFloat kLocalPreviewMargin = 20;
         // Suppose avatar url is a matrix content uri, we use SDK to get the well adapted thumbnail from server
         callerImageView.mediaFolder = kMXMediaManagerAvatarThumbnailFolder;
         callerImageView.enableInMemoryCache = YES;
-        [callerImageView setImageURI:peerAvatarURL
+        [callerImageView setImageURI:nil//peerAvatarURL
                             withType:nil
                  andImageOrientation:UIImageOrientationUp
                        toFitViewSize:callerImageView.frame.size
@@ -1144,7 +1144,7 @@ static const CGFloat kLocalPreviewMargin = 20;
             // Suppose avatar url is a matrix content uri, we use SDK to get the well adapted thumbnail from server
             callerImageView.mediaFolder = kMXMediaManagerAvatarThumbnailFolder;
             callerImageView.enableInMemoryCache = YES;
-            [callerImageView setImageURI:peerAvatarURL
+            [callerImageView setImageURI:nil//peerAvatarURL
                                 withType:nil
                      andImageOrientation:UIImageOrientationUp
                            toFitViewSize:callerImageView.frame.size

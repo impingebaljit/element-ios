@@ -1164,7 +1164,7 @@
 
         // TODO: Display the orignal contact avatar when the contast is not a Matrix user
 
-        [avatarFullScreenView setImageURI:avatarURL
+        [avatarFullScreenView setImageURI:nil//avatarURL
                                  withType:nil
                       andImageOrientation:UIImageOrientationUp
                              previewImage:self.contactAvatar.image

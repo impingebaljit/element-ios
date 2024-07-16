@@ -516,7 +516,7 @@ andImageOrientation:(UIImageOrientation)orientation
        previewImage:(UIImage*)previewImage
        mediaManager:(MXMediaManager*)mediaManager
 {
-    [self setImageURI:mxContentURI
+    [self setImageURI:nil//mxContentURI
              withType:mimeType
   andImageOrientation:orientation
           isThumbnail:NO
@@ -536,7 +536,7 @@ andImageOrientation:(UIImageOrientation)orientation
     thumbnailViewSize = viewSize;
     thumbnailMethod = thumbnailingMethod;
     
-    [self setImageURI:mxContentURI
+    [self setImageURI:nil//mxContentURI
              withType:mimeType
   andImageOrientation:orientation
           isThumbnail:YES

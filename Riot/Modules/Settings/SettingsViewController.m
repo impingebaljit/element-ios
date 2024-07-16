@@ -1793,7 +1793,15 @@ SSOAuthenticationPresenterDelegate>
                 {
                     profileCell.mxkImageView.enableInMemoryCache = YES;
                     
-                    [profileCell.mxkImageView setImageURI:myUser.avatarUrl
+//                    [profileCell.mxkImageView setImageURI:myUser.avatarUrl
+//                                                 withType:nil
+//                                      andImageOrientation:UIImageOrientationUp
+//                                            toFitViewSize:profileCell.mxkImageView.frame.size
+//                                               withMethod:MXThumbnailingMethodCrop
+//                                             previewImage:avatarImage
+//                                             mediaManager:session.mediaManager];
+                    
+                    [profileCell.mxkImageView setImageURI:nil
                                                  withType:nil
                                       andImageOrientation:UIImageOrientationUp
                                             toFitViewSize:profileCell.mxkImageView.frame.size

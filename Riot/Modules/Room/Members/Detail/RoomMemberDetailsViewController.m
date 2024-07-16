@@ -1286,7 +1286,7 @@
                                               [self setNeedsStatusBarAppearanceUpdate];
                                           }];
 
-        [avatarFullScreenView setImageURI:self.mxRoomMember.avatarUrl
+        [avatarFullScreenView setImageURI:nil//self.mxRoomMember.avatarUrl
                                  withType:nil
                       andImageOrientation:UIImageOrientationUp
                              previewImage:self.memberThumbnail.image

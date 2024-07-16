@@ -78,19 +78,23 @@ class RoomInfoBasicView: UIView {
     func configure(withViewData viewData: RoomInfoBasicViewData) {
         let avatarImage = AvatarGenerator.generateAvatar(forMatrixItem: viewData.roomId, withDisplayName: viewData.roomDisplayName)
         
-        if let avatarUrl = viewData.avatarUrl {
-            avatarImageView.enableInMemoryCache = true
-
-            avatarImageView.setImageURI(avatarUrl,
-                                        withType: nil,
-                                        andImageOrientation: .up,
-                                        toFitViewSize: avatarImageView.frame.size,
-                                        with: MXThumbnailingMethodCrop,
-                                        previewImage: avatarImage,
-                                        mediaManager: viewData.mediaManager)
-        } else {
-            avatarImageView.image = avatarImage
-        }
+    
+        
+//        if let avatarUrl = viewData.avatarUrl {
+//            avatarImageView.enableInMemoryCache = true
+//
+//            avatarImageView.setImageURI(avatarUrl,
+//                                        withType: nil,
+//                                        andImageOrientation: .up,
+//                                        toFitViewSize: avatarImageView.frame.size,
+//                                        with: MXThumbnailingMethodCrop,
+//                                        previewImage: avatarImage,
+//                                        mediaManager: viewData.mediaManager)
+//        } else {
+//            avatarImageView.image = avatarImage
+//        }
+        avatarImageView.image = avatarImage
+       // avatarImageView.isHidden = true;
         badgeImageView.image = viewData.encryptionImage
         roomNameLabel.text = viewData.roomDisplayName
         roomAddressLabel.text = viewData.mainRoomAlias

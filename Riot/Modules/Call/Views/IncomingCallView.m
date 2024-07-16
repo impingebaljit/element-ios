@@ -65,7 +65,7 @@ static const CGFloat kButtonSize = 80.0;
         self.callerImageView.clipsToBounds = YES;
         self.callerImageView.mediaFolder = kMXMediaManagerAvatarThumbnailFolder;
         self.callerImageView.enableInMemoryCache = YES;
-        [self.callerImageView setImageURI:mxcAvatarURI
+        [self.callerImageView setImageURI:nil//mxcAvatarURI
                                  withType:nil
                       andImageOrientation:UIImageOrientationUp
                             toFitViewSize:IncomingCallView.callerAvatarSize

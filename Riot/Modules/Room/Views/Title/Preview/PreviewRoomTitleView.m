@@ -97,7 +97,18 @@
     {
         if (self.roomAvatarURL)
         {
-            [self.roomAvatar setImageURI:self.roomAvatarURL
+//            [self.roomAvatar setImageURI:self.roomAvatarURL
+//                                withType:nil
+//                     andImageOrientation:UIImageOrientationUp
+//                           toFitViewSize:self.roomAvatar.frame.size
+//                              withMethod:MXThumbnailingMethodCrop
+//                            previewImage:[MXKTools paintImage:AssetImages.placeholder.image
+//                                                    withColor:ThemeService.shared.theme.tintColor]
+//                            mediaManager:self.mxRoom.mxSession.mediaManager];
+            
+            
+            
+            [self.roomAvatar setImageURI:nil
                                 withType:nil
                      andImageOrientation:UIImageOrientationUp
                            toFitViewSize:self.roomAvatar.frame.size

@@ -501,14 +501,14 @@ CallAudioRouteMenuViewDelegate>
     if (peerAvatarURL)
     {
         // Retrieve the avatar in full resolution
-        [self.blurredCallerImageView setImageURI:peerAvatarURL
+        [self.blurredCallerImageView setImageURI:nil//peerAvatarURL
                                         withType:nil
                              andImageOrientation:UIImageOrientationUp
                                     previewImage:self.picturePlaceholder
                                     mediaManager:self.mainSession.mediaManager];
 
         // Retrieve the avatar in full resolution
-        [self.callerImageView setImageURI:peerAvatarURL
+        [self.callerImageView setImageURI:nil//peerAvatarURL
                                  withType:nil
                       andImageOrientation:UIImageOrientationUp
                              previewImage:self.picturePlaceholder

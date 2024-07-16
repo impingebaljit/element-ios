@@ -110,7 +110,15 @@ static UIColor* kMoreLabelDefaultcolor;
         [self addSubview:imageView];
         imageView.enableInMemoryCache = YES;
         
-        [imageView setImageURI:roomMember.avatarUrl
+//       // [imageView setImageURI:roomMember.avatarUrl
+//                      withType:nil
+//           andImageOrientation:UIImageOrientationUp
+//                 toFitViewSize:CGSizeMake(side, side)
+//                    withMethod:MXThumbnailingMethodCrop
+//                  previewImage:preview
+//                  mediaManager:_mediaManager];
+        
+        [imageView setImageURI:nil
                       withType:nil
            andImageOrientation:UIImageOrientationUp
                  toFitViewSize:CGSizeMake(side, side)

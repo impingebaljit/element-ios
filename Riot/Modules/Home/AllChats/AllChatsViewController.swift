@@ -454,9 +454,9 @@ class AllChatsViewController: HomeViewController {
             informationText = VectorL10n.allChatsEmptyViewInformation
         }
         
-        self.emptyView?.fill(with: emptyViewArtwork,
-                             title: title,
-                             informationText: informationText)
+       self.emptyView?.fill(with: emptyViewArtwork,
+                       title: title,
+                     informationText: informationText)
     }
     
     private var emptyViewArtwork: UIImage {

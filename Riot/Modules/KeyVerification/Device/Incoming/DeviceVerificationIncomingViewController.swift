@@ -134,10 +134,14 @@ final class DeviceVerificationIncomingViewController: UIViewController {
             let defaultavatarImage = AvatarGenerator.generateAvatar(forMatrixItem: self.viewModel.userId, withDisplayName: self.viewModel.userDisplayName)
 
             avatarImageView.enableInMemoryCache = true
-            avatarImageView.setImageURI(self.viewModel.avatarUrl, withType: nil, andImageOrientation: .up, previewImage: defaultavatarImage, mediaManager: self.viewModel.mediaManager)
+          //  avatarImageView.setImageURI(self.viewModel.avatarUrl, withType: nil, andImageOrientation: .up, previewImage: defaultavatarImage, mediaManager: self.viewModel.mediaManager)
 
+            avatarImageView.setImageURI(nil, withType: nil, andImageOrientation: .up, previewImage: defaultavatarImage, mediaManager: self.viewModel.mediaManager)
+            
             avatarImageView.clipsToBounds = true
         }
+        
+      
 
         self.userDisplaynameLabel.text = self.viewModel.userDisplayName ?? self.viewModel.userId
         self.deviceIdLabel.text = self.viewModel.deviceId

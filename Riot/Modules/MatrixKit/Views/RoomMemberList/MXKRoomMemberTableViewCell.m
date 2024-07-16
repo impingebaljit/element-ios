@@ -81,7 +81,7 @@
         self.pictureView.mediaFolder = kMXMediaManagerAvatarThumbnailFolder;
         self.pictureView.enableInMemoryCache = YES;
         // Consider here the member avatar is stored unencrypted on Matrix media repo
-        [self.pictureView setImageURI:memberCellData.roomMember.avatarUrl
+        [self.pictureView setImageURI:nil//memberCellData.roomMember.avatarUrl
                              withType:nil
                   andImageOrientation:UIImageOrientationUp
                         toFitViewSize:self.pictureView.frame.size

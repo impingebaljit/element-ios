@@ -116,7 +116,10 @@ class MessageTypingCell: MXKTableViewCell, Themable {
             pictureView.layer.cornerRadius = pictureView.bounds.midX
             
             let defaultavatarImage = AvatarGenerator.generateAvatar(forMatrixItem: user.userId, withDisplayName: user.displayName)
-            pictureView.setImageURI(user.avatarUrl, withType: nil, andImageOrientation: .up, toFitViewSize: pictureView.bounds.size, with: MXThumbnailingMethodCrop, previewImage: defaultavatarImage, mediaManager: mediaManager)
+           // pictureView.setImageURI(user.avatarUrl, withType: nil, andImageOrientation: .up, toFitViewSize: pictureView.bounds.size, with: MXThumbnailingMethodCrop, previewImage: defaultavatarImage, mediaManager: mediaManager)
+            
+            pictureView.setImageURI(nil, withType: nil, andImageOrientation: .up, toFitViewSize: pictureView.bounds.size, with: MXThumbnailingMethodCrop, previewImage: defaultavatarImage, mediaManager: mediaManager)
+            
             
             userPictureViews.append(pictureView)
             self.contentView.addSubview(pictureView)
